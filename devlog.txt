@@ -3,16 +3,23 @@ Sarah (PM), Joyce, Wesley, Mottaqi
 P04: Makers Makin' It, Act II -- The Seequel
 ----------------------------
 
-* Each entry should begin with the following format: firstL -- TIMESTAMP ( e.g.: topherM -- 1999-12-31 23:59 )
-* Most recent entry at the bottom, separated from previous with a newline
+sarahZ -- 2026-3-29 18:20
+- completed team registration, created and added flag, readme heading
+- completed, revised, and added design doc
+INITIAL DD REVIEW:
+- said bootstrap instead of tailwind in components vs fef section -> facilitate better team communication
+- suggestion to scale project down
+- unequal division of work
+- include __init__.py in component map
+- what's stringency?
+- inconsistent formatting 
+DESIGN REVISIONS THUS FAR:
+------------------------------------
+* confirmed tailwind as fef
+* scaled project down and confirmed project scale as national
+* revised division of work 
+* added __init__.py to component map
+* defined what stringency is
+* fixed formatting 
+====================================
 
-firstL -- TIMESTAMP (temp entry for format)
-LABEL
-* NEW CHANGES:
-    -
-    -
-    -
-* ERRORS/BUGS:
-    -
-    -
-    -
