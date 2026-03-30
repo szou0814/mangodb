@@ -14,7 +14,7 @@ DB_FILE="database.db"
 def login():
     error_msg = ""
     if "user_id" in session:
-        return redirect(url_for("home"))
+        return redirect(url_for("start"))
     if request.method == "POST":
         username = request.form.get("user_id").strip()
         password = request.form.get("password").strip()
@@ -22,7 +22,7 @@ def login():
         if auth.user_exists(username):
             if auth.login(username, password):
                 session["user_id"] = username
-                return redirect(url_for("home"))
+                return redirect(url_for("start"))
             else:
                 error_msg = "Password is incorrect."
         else:
@@ -33,7 +33,7 @@ def login():
 def register():
     error_msg = ""
     if "user_id" in session:
-        return redirect(url_for("home"))
+        return redirect(url_for("start"))
 
     if request.method == "POST":
         username = request.form.get("user_id").strip()
@@ -42,7 +42,7 @@ def register():
         result = auth.register(username, password)
         if (result == "Registered"):
             session["user_id"] = username
-            return redirect(url_for("home"))
+            return redirect(url_for("start"))
         if (result == "Username cannot have special characters except '_'." or result == "Username is already taken." or result == "Username or password cannot be empty."):
             error_msg = result
     return render_template("register.html", error = error_msg)
@@ -52,11 +52,11 @@ def logout():
     if "user_id" in session:
         session.pop("user_id", None)
     return redirect(url_for("login"))
-    
-@app.route("/home")
+
+@app.route("/start")
 def home():
     if "user_id" in session:
-        return render_template("home.html")
+        return render_template("start.html")
     else:
         return redirect(url_for("login"))
 
