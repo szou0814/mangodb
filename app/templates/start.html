@@ -1,27 +1,47 @@
 <!DOCTYPE html>
 
 <html>
-<title>homepage</title>
 
-  <h2>Logout</h2>
-  <form action="/logout" method="POST">
-      <input type="submit" value="Logout">
-  </form>
+  <head>
 
-  <div id="graph">
-  </div>
+    <title> HOMEPAGE </title>
 
-  <script type="module">
-    import { chart } from "/static/js/simulation.js";
+    <!-- CUSTOM CSS -->
+    <style>
+    </style>
 
-    window.onload = async function() { // async has the function running in the background asynchronously
-      document.getElementById('graph').innerHTML = "<br>waiting for graph.....";
+  </head>
 
-      var chartElem = await chart(); // everything below await will not run until this promise is complete
-      chartElem.update(new Date());
+    <body>
 
-      document.getElementById('graph').innerHTML = "";
-      document.getElementById('graph').append(chartElem);
-    };
-  </script>
+      <h2>Logout</h2>
+      <form action="/logout" method="POST">
+          <input type="submit" value="Logout">
+      </form>
+
+      <div id="graph">
+      </div>
+
+      <!-- TAILWIND -->
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+      <!-- CUSTOM JS -->
+      <script type="module">
+        import { chart } from "/static/js/simulation.js";
+
+        window.onload = async function() { // async has the function running in the background asynchronously
+          document.getElementById('graph').innerHTML = "<br>waiting for graph.....";
+
+          var chartElem = await chart(); // everything below await will not run until this promise is complete
+          chartElem.update(new Date());
+
+          document.getElementById('graph').innerHTML = "";
+          document.getElementById('graph').append(chartElem);
+        };
+      </script>
+
+    </body>
+
 </html>
