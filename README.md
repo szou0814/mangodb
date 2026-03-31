@@ -1,4 +1,4 @@
-# Pandemic Simulator by DeadDuckies
+# Pandemic Simulator by mangodb
 
 ## Roster:
 - PM: Sarah Zou
