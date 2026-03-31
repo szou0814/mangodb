@@ -2,18 +2,85 @@
 
 
 <html>
-  <title>Pandemic Simulator Login</title>
-  <h2>Login</h2>
 
-  Login to your existing account by entering your credentials.<br><br>
-  If you do not already have an existing account, please register
-  <a href="/register">here</a><br><br>
+  <head>
 
-  <form method="POST">
-    <input type="text" name="user_id" placeholder="Username" required> <br>
-    <input type="password" name="password" placeholder="Password" required> <br><br>
-    <input type="submit" name="sub1" value="Login">
-  </form>
+    <title> Pandemic Simulator Login </title>
 
-  {{ error }}
+    <!-- CUSTOM CSS -->
+    <style>
+      /* BACKGROUND */
+      .bg {
+        background-image: url("/static/images/bg.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+
+        width: 100vw;
+        height: 100vh;
+
+        filter: brightness(40%);
+
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -1;
+      }
+
+      .icon {
+        height: 30vh;
+        margin-top: clamp(40px, 5%, 5%);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .glow {
+        border-radius: 20%;
+        box-shadow: rgba(100, 100, 100, 0.8) 0 0 90px 33px;
+      }
+
+      body {
+        color: white;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+    <div class='bg'> </div>
+    <div class='icon'>
+      <img class="glow" src="/static/images/icon.png" style="height: 100%;
+                                                              width: auto;"> </img>
+    </div>
+
+    <br><br>
+
+    <h2>Login</h2>
+
+    Login to your existing account by entering your credentials.<br><br>
+    If you do not already have an existing account, please register
+    <a href="/register">here</a><br><br>
+
+    <form method="POST">
+      <input type="text" name="user_id" placeholder="Username" required> <br>
+      <input type="password" name="password" placeholder="Password" required> <br><br>
+      <input type="submit" name="sub1" value="Login">
+    </form>
+
+    {{ error }}
+
+    <!-- TAILWIND -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  </body>
+
 </html>
