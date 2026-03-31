@@ -23,3 +23,8 @@ DESIGN REVISIONS THUS FAR:
 * fixed formatting 
 ====================================
 
+sarahZ -- 2026-3-30 20:10
+- finalized datasets and added csvs 
+- created db tables 
+- working app, login, logout, register
+- added project desc
