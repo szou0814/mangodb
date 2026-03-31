@@ -22,7 +22,7 @@ def login():
         if auth.user_exists(username):
             if auth.login(username, password):
                 session["user_id"] = username
-                return redirect(url_for("start"))
+                return redirect(url_for("home"))
             else:
                 error_msg = "Password is incorrect."
         else:
@@ -42,7 +42,7 @@ def register():
         result = auth.register(username, password)
         if (result == "Registered"):
             session["user_id"] = username
-            return redirect(url_for("start"))
+            return redirect(url_for("home"))
         if (result == "Username cannot have special characters except '_'." or result == "Username is already taken." or result == "Username or password cannot be empty."):
             error_msg = result
     return render_template("register.html", error = error_msg)
