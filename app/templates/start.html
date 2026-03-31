@@ -10,4 +10,18 @@
 
   <div id="graph">
   </div>
+
+  <script type="module">
+    import { chart } from "/static/simulation.js";
+
+    window.onload = async function() { // async has the function running in the background asynchronously
+      document.getElementById('graph').innerHTML = "<br>waiting for graph.....";
+
+      var chartElem = await chart(); // everything below await will not run until this promise is complete
+      chartElem.update(new Date());
+
+      document.getElementById('graph').innerHTML = "";
+      document.getElementById('graph').append(chartElem);
+    };
+  </script>
 </html>
