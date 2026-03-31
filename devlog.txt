@@ -7,24 +7,29 @@ sarahZ -- 2026-3-29 18:20
 - completed team registration, created and added flag, readme heading
 - completed, revised, and added design doc
 INITIAL DD REVIEW:
-- said bootstrap instead of tailwind in components vs fef section -> facilitate better team communication
-- suggestion to scale project down
-- unequal division of work
-- include __init__.py in component map
-- what's stringency?
-- inconsistent formatting 
+  - said bootstrap instead of tailwind in components vs fef section -> facilitate better team communication
+  - suggestion to scale project down
+  - unequal division of work
+  - include __init__.py in component map
+  - what's stringency?
+  - inconsistent formatting
 DESIGN REVISIONS THUS FAR:
 ------------------------------------
-* confirmed tailwind as fef
-* scaled project down and confirmed project scale as national
-* revised division of work 
-* added __init__.py to component map
-* defined what stringency is
-* fixed formatting 
-====================================
+  * confirmed tailwind as fef
+  * scaled project down and confirmed project scale as national
+  * revised division of work
+  * added __init__.py to component map
+  * defined what stringency is
+  * fixed formatting
 
 sarahZ -- 2026-3-30 20:10
-- finalized datasets and added csvs 
-- created db tables 
-- working app, login, logout, register
-- added project desc
+  - finalized datasets and added csvs
+  - created db tables
+  - working app, login, logout, register
+  - added project desc
+
+joyceL -- 2026-3-30 21:38
+D3.JS AND CSS
+  - began exploration of d3.js
+  - set up a basic chart svg element
+  - began some basic css in login.html
