@@ -5,7 +5,7 @@ import datetime
 import sys
 import random
 import datetime
-import build_user_db as auth
+import build_db as auth
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 DB_FILE="database.db"
