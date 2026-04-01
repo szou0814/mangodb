@@ -6,6 +6,7 @@ STATES = ["AK", "AL", "AR", "AS", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA"
 ## we gonna ignore alaska and hawaii cuz cmon bro
 ##https://gist.github.com/longbai/44f446bc907ada728948e4c15aca252e
 pop = pd.DataFrame(index = STATES)
+pop.insert(pop.shape[1], "infected", [0]*48)
 infected_states =[]
 def select_state(state: str):
     # make sure this matches the states array.
