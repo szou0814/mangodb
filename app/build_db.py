@@ -24,12 +24,25 @@ def create_tbs():
     c = db.cursor()
     c.execute (f"CREATE TABLE IF NOT EXISTS USER(user_id TEXT PRIMARY KEY, password TEXT)")
     c.execute (f"CREATE TABLE IF NOT EXISTS STATES(state_id TEXT PRIMARY KEY, vulnerability_index INTEGER, population INTEGER, population_density FLOAT)")
-    c.execute (f"CREATE TABLE IF NOT EXISTS stringency(stringency_id INTEGER PRIMARY KEY AUTOINCREMENT, state_id TEXT, date DATE, stringency_index FLOAT, FOREIGN KEY (statesid) REFERENCES states(state_id))")
+    c.execute (f"CREATE TABLE IF NOT EXISTS stringency(stringency_id INTEGER PRIMARY KEY AUTOINCREMENT, state_id TEXT, date DATE, stringency_index FLOAT, FOREIGN KEY (state_id) REFERENCES states(state_id))")
     c.execute (f"CREATE TABLE IF NOT EXISTS covid_stats(stats_id INTEGER PRIMARY KEY AUTOINCREMENT, state_id TEXT, date DATE, infected INTEGER, dead INTEGER, FOREIGN KEY (state_id) REFERENCES states(state_id))")
-    c.execute (f"CREATE TABLE IF NOT EXISTS runs(run_id INTEGER PRIMARY KEY AUTOINCREMENT, state_id TEXT, total_infected INTEGER, total_dead INTEGER, FOREIGN_KEY(state_id) REFERENCES states(state_id))")
+    c.execute (f"CREATE TABLE IF NOT EXISTS runs(run_id INTEGER PRIMARY KEY AUTOINCREMENT, state_id TEXT, total_infected INTEGER, total_dead INTEGER, FOREIGN KEY (state_id) REFERENCES states(state_id))")
 
     db.commit()
     db.close()
+
+def load_states():
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+
+    with open("data/state_trends") as file:
+        reader = csv.DictReader(f)
+
+        for row in reader:
+            population = int(row["population"])
+            population_density = float(row["pop_density"])
+
+    c.execute(f"INSERT s)
 
 
 #USER#############################################################################################
