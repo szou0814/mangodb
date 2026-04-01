@@ -33,3 +33,13 @@ D3.JS AND CSS
   - began exploration of d3.js
   - set up a basic chart svg element
   - began some basic css in login.html
+
+sarahZ -- 2026-3-30 21:07
+- went crazy serving app remotely
+errors: 
+* gunicorn couldnt create app.sock because requests library was not installed 
+found issue by doing gunicorn wsgi:app in venv
+* needed to add server_name in nginx file 
+found issue after consulting with joyce, lesson learned shouldve consulted earlier
+- added live site link and install guide
+- addded requirements.txt
