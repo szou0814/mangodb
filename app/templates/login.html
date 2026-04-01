@@ -26,6 +26,16 @@
         z-index: -1;
       }
 
+      body {
+        color: white;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* ICON */
       .icon {
         height: 30vh;
         margin-top: clamp(40px, 5%, 5%);
@@ -40,13 +50,13 @@
         box-shadow: rgba(100, 100, 100, 0.8) 0 0 90px 33px;
       }
 
-      body {
-        color: white;
+      /* HEADER */
+      #header {
+        color: #1b0000;
+        text-shadow: 0 0 12px #800000, -1px -2px white;
 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        font-size: 400%;
+        font-weight: bolder;
       }
     </style>
 
@@ -60,9 +70,7 @@
                                                               width: auto;"> </img>
     </div>
 
-    <br><br>
-
-    <h2>Login</h2>
+    <h2 style="margin-top: 2.5vh" id="header">Login</h2>
 
     Login to your existing account by entering your credentials.<br><br>
     If you do not already have an existing account, please register
