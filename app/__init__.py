@@ -64,8 +64,10 @@ def home():
 def game():
     if "user_id" not in session:
         return redirect(url_for("login"))
-    else:
-        return render_template("game.html")
+    if request.method == "POST":
+        session["state_name"] = request.form.get("state_name")
+        session["state_abbr"] = request.form.get("state_abbr")
+    return render_template("game.html", state_name=session.get("state_name", ""), state_abbr=session.get("state_abbr", ""))
 
 if __name__ == "__main__":
     app.debug = True
