@@ -3,11 +3,13 @@
 <html>
 
   <head>
-
     <title> HOMEPAGE </title>
 
     <!-- CUSTOM CSS -->
     <style>
+      #map-container svg { width: 100%; height: auto; }
+      #map-container path[data-name] { cursor: pointer; }
+      #start-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     </style>
 
   </head>
@@ -19,8 +21,15 @@
           <input type="submit" value="Logout">
       </form>
 
-      <div id="graph">
-      </div>
+      <div id="map-container"></div>
+
+      <p id="state-label">Select a state</p>
+
+      <form action="/game" method="POST">
+        <input type="hidden" name="state_name" id="state-name-input" />
+        <input type="hidden" name="state_abbr" id="state-abbr-input" />
+        <button type="submit" id="start-btn" disabled>Start Simulation</button>
+      </form>
 
       <!-- TAILWIND -->
       <meta charset="UTF-8" />
@@ -29,17 +38,35 @@
 
       <!-- CUSTOM JS -->
       <script type="module">
-        import { chart } from "/static/js/simulation.js";
+        fetch('/static/us.svg')
+          .then(r => r.text())
+          .then(svgText => {
+            document.getElementById('map-container').innerHTML = svgText;
 
-        window.onload = async function() { // async has the function running in the background asynchronously
-          document.getElementById('graph').innerHTML = "<br>waiting for graph.....";
+            let selected = null;
 
-          var chartElem = await chart(); // everything below await will not run until this promise is complete
-          chartElem.update(new Date());
+            document.querySelectorAll('#map-container path[data-name]').forEach(path => {
+              path._origFill = path.style.fill;
+              path.addEventListener('mouseenter', () => {
+                if (path !== selected) path.style.fill = '#aaa';
+              });
+              path.addEventListener('mouseleave', () => {
+                if (path !== selected) path.style.fill = path._origFill;
+              });
+              path.addEventListener('click', () => {
+                if (selected) selected.style.fill = selected._origFill;
+                selected = path;
+                path.style.fill = 'pink';
 
-          document.getElementById('graph').innerHTML = "";
-          document.getElementById('graph').append(chartElem);
-        };
+                const stateName = path.getAttribute('data-name');
+                const stateAbbr = path.getAttribute('data-abbr');
+                document.getElementById('state-label').textContent = stateName;
+                document.getElementById('state-name-input').value = stateName;
+                document.getElementById('state-abbr-input').value = stateAbbr;
+                document.getElementById('start-btn').disabled = false;
+              });
+            });
+          });
       </script>
 
     </body>
