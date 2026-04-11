@@ -60,6 +60,13 @@ def home():
     else:
         return redirect(url_for("login"))
 
+@app.route("/game", methods=["GET", "POST"])
+def game():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    else:
+        return render_template("game.html")
+
 if __name__ == "__main__":
     app.debug = True
     app.run()
