@@ -34,7 +34,7 @@ def create_tbs():
 def load_states():
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
-    with open("data/SVI2020_US_COUNTY.csv", newline="") as f:
+    with open("data/SVI_2020_US_county.csv", newline="") as f:
         reader = csv.DictReader(f)
         states_totpop = {}
         states_totarea = {}
@@ -50,7 +50,7 @@ def load_states():
                 continue 
             if population <= 0 or area <= 0:
                 continue
-            if state not in states_totpop:
+            if state_id not in states_totpop:
                 states_totpop[state_id] = 0
                 states_totarea[state_id] = 0.0
                 states_totsvi[state_id] = 0.0
@@ -62,7 +62,7 @@ def load_states():
         for state in states_totpop:
             avg_vulnerability_index = states_totsvi[state] / states_numcounties[state]
             population_density = states_totpop[state] / states_totarea[state]
-            c.execute("INSERT INTO STATES (state_id, vulnerability_index, population, population_density) VALUES (?, ?, ?, ?)", (state_id, avg_vulnerability_index, states_totpop[state], population_density))
+            c.execute("INSERT INTO STATES (state_id, vulnerability_index, population, population_density) VALUES (?, ?, ?, ?)", (state, avg_vulnerability_index, states_totpop[state], population_density))
 
     db.commit()
     db.close()
@@ -75,7 +75,7 @@ def format_date(date):
 def load_stringency():
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
-    with open("data/OxCGRT_US_latest.csv", newline="") as f:
+    with open("data/OxCGRT_US_latest.csv", newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
             state_id = row["RegionName"]
@@ -85,6 +85,8 @@ def load_stringency():
                 date = format_date(row["Date"])
                 stringency_index = float(row["StringencyIndex"])
             except (ValueError, TypeError):
+                continue
+            if not date or stringency_index == 0.0 or date < "2020-03-01":
                 continue
             c.execute("INSERT INTO stringency(state_id, date, stringency_index) VALUES (?, ?, ?)", (state_id, date, stringency_index))
 
@@ -110,6 +112,23 @@ def load_covid():
     db.commit()
     db.close()
 
+#QUERY#############################################################################################
+def get_statestats(state_id):
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+    c.execute("SELECT vulnerability_index, population, population_density FROM STATES WHERE state_id = ?", (state_id,))
+    result = c.fetchone()
+    db.close()
+    return result
+
+def get_initstringency(state_id):
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+    c.execute("SELECT stringency_index, date FROM stringency WHERE state_id = ? ORDER BY date ASC LIMIT 1", (state_id,))
+    result = c.fetchone()
+    db.close()
+    return result
+    
 #USER#############################################################################################
 #checks if username already in db
 def user_exists(username):

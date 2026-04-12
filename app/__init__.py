@@ -5,7 +5,7 @@ import datetime
 import sys
 import random
 import datetime
-import build_db as auth
+import build_db as db
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 DB_FILE="database.db"
@@ -19,8 +19,8 @@ def login():
         username = request.form.get("user_id").strip()
         password = request.form.get("password").strip()
 
-        if auth.user_exists(username):
-            if auth.login(username, password):
+        if db.user_exists(username):
+            if db.login(username, password):
                 session["user_id"] = username
                 return redirect(url_for("home"))
             else:
@@ -39,7 +39,7 @@ def register():
         username = request.form.get("user_id").strip()
         password = request.form.get("password").strip()
 
-        result = auth.register(username, password)
+        result = db.register(username, password)
         if (result == "Registered"):
             session["user_id"] = username
             return redirect(url_for("home"))
@@ -55,10 +55,18 @@ def logout():
 
 @app.route("/start")
 def home():
-    if "user_id" in session:
-        return render_template("start.html")
-    else:
+    if "user_id" not in session:
         return redirect(url_for("login"))
+    return render_template("start.html")
+
+@app.route("/state_stats", methods=["POST"])
+def state_stats():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    state_id = request.form.get("state_name")
+    stats = db.get_statestats(state_id)
+    stringency = db.get_initstringency(state_id)
+    return render_template("start.html", state = state_id, population =  stats[1], population_density = stats[2], vulnerability_index = stats[0], stringency_index = stringency[0], stringency_date = stringency[1])
 
 @app.route("/game", methods=["GET", "POST"])
 def game():
@@ -66,8 +74,7 @@ def game():
         return redirect(url_for("login"))
     if request.method == "POST":
         session["state_name"] = request.form.get("state_name")
-        session["state_abbr"] = request.form.get("state_abbr")
-    return render_template("game.html", state_name=session.get("state_name", ""), state_abbr=session.get("state_abbr", ""))
+    return render_template("game.html", state_name=session.get("state_name", ""))
 
 if __name__ == "__main__":
     app.debug = True

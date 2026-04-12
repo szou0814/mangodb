@@ -3,7 +3,7 @@
 <html>
 
   <head>
-    <title> HOMEPAGE </title>
+    <title>Homepage</title>
 
     <!-- CUSTOM CSS -->
     <style>
@@ -25,9 +25,22 @@
 
       <p id="state-label">Select a state</p>
 
+      {% if state %}
+        <div id = "state-stats">
+          <p> {{ state }} </p>
+          <p>Population: {{ population }}</p>
+          <p>Population Density: {{ population_density }} /mi^2</p>
+          <p>Vulnerability Index: {{ vulnerability_index }}</p>
+          <p>Stringency Index: {{ stringency_index }} ({{ stringency_date }})</p>
+        </div>
+      {% endif %}
+
+      <form action="/state_stats" method="POST" id="state-select-form">
+        <input type="hidden" name="state_name" id="state-name-input"/>
+      </form>
+
       <form action="/game" method="POST">
-        <input type="hidden" name="state_name" id="state-name-input" />
-        <input type="hidden" name="state_abbr" id="state-abbr-input" />
+        <input type="hidden" name="state_name" id="game-state-name-input" value="{{ state }}"/>
         <button type="submit" id="start-btn" disabled>Start Simulation</button>
       </form>
 
@@ -59,13 +72,22 @@
                 path.style.fill = 'pink';
 
                 const stateName = path.getAttribute('data-name');
-                const stateAbbr = path.getAttribute('data-abbr');
-                document.getElementById('state-label').textContent = stateName;
                 document.getElementById('state-name-input').value = stateName;
-                document.getElementById('state-abbr-input').value = stateAbbr;
+                document.getElementById('game-state-name-input').value = stateName;
                 document.getElementById('start-btn').disabled = false;
+                document.getElementById("state-select-form").submit();
               });
             });
+
+            const alreadySelected = "{{ state }}";
+            if (alreadySelected) {
+              document.querySelectorAll('#map-container path[data-name]').forEach(path => {
+                if (path.getAttribute('data-name') === alreadySelected) {
+                  path.style.fill = 'pink';
+                  selected = path;
+                }
+              });
+            }
           });
       </script>
 
