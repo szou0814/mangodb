@@ -43,11 +43,11 @@
     <script type="module">
       import { chart, data } from "/static/js/simulation.js";
       import { Scrubber } from "/static/js/mbostockScrubber.js";
+      import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
       document.getElementById('graph').innerHTML = "<br>waiting for graph.....";
 
       window.chartElem = await chart(); // everything below await will not run until this promise is complete
-      chartElem.update(new Date());
 
       document.getElementById('graph').innerHTML = "";
       document.getElementById('graph').append(chartElem);
@@ -57,8 +57,12 @@
         dates.push(point.date)
       })
 
-      window.chartScrubber = await Scrubber(dates);
+      const chartScrubber = await Scrubber(dates, {delay: 80});
       document.getElementById('util').append(chartScrubber);
+
+      chartScrubber.addEventListener("input", function() {
+        chartElem.update(chartScrubber.value)
+      })
     </script>
 
     <!-- GLOBAL SCOPE FUNCTIONS (because it wouldn't let me import outside a module) -->
