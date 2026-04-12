@@ -166,4 +166,7 @@ def delete_acc(username):
 ##################################################################################################
 if __name__ == "__main__":
     create_tbs()
+    load_states()
+    load_stringency()
+    load_covid()
     print("Database created.")
