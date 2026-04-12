@@ -1,6 +1,5 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import * as topojson from "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm";
-// import {Scrubber} from "@mbostock/scrubber";
 
 export async function chart() {
   const us = await d3.json("https://cdn.jsdelivr.net/npm/us-atlas@1/us/10m.json");
@@ -60,7 +59,7 @@ export async function chart() {
   });
 }
 
-const data = [
+export const data = [
   Object.assign([523.3754804030681, 353.07903336329866], {date: new Date("1962-07-01")}),
   Object.assign([544.5356591678276, 355.4857849174865], {date: new Date("1964-08-01")}),
   Object.assign([516.9205616647201, 356.6437794871256], {date: new Date("1965-08-01")}),
@@ -93,6 +92,10 @@ const data = [
 //   })
 //   .sort((a, b) => a.date - b.date)
 //
-// parseDate = d3.utcParse("%m/%d/%Y")
-// projection = d3.geoAlbersUsa().scale(1280).translate([480, 300])
+// function parseDate(date) {
+//   return d3.utcParse(date)
+// }
 //
+// function projection(d) {
+//   return d3.geoAlbersUsa().scale(1280).translate([480, 300])
+// }

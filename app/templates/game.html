@@ -8,17 +8,65 @@
 
     <!-- CUSTOM CSS -->
     <style>
+
+      body {
+        padding: 10px;
+      }
+
+      #but1 {
+        border-width: 3px;
+
+        font-size: 200%;
+      }
+
     </style>
 
   </head>
 
   <body>
 
+    <!-- GRAPH -->
+    <div id="graph">
+    </div>
+
+    <!-- BUTTONS FOR TESTING -->
+    <div id="util">
+      <button id="but1" onclick="updateGraph()"> aaaaa </button>
+    </div>
 
     <!-- TAILWIND -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- D3.JS IMPLEMENTATION -->
+    <script type="module">
+      import { chart, data } from "/static/js/simulation.js";
+      import { Scrubber } from "/static/js/mbostockScrubber.js";
+
+      document.getElementById('graph').innerHTML = "<br>waiting for graph.....";
+
+      window.chartElem = await chart(); // everything below await will not run until this promise is complete
+      chartElem.update(new Date());
+
+      document.getElementById('graph').innerHTML = "";
+      document.getElementById('graph').append(chartElem);
+
+      var dates = [];
+      await data.forEach(point => {
+        dates.push(point.date)
+      })
+
+      window.chartScrubber = await Scrubber(dates);
+      document.getElementById('util').append(chartScrubber);
+    </script>
+
+    <!-- GLOBAL SCOPE FUNCTIONS (because it wouldn't let me import outside a module) -->
+    <script>
+      function updateGraph() {
+        chartElem.update(new Date("1965-08-01"));
+      }
+    </script>
 
   </body>
 

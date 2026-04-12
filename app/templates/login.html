@@ -5,7 +5,7 @@
 
   <head>
 
-    <title> Pandemic Simulator Login </title>
+    <title> LOGIN </title>
 
     <!-- CUSTOM CSS -->
     <style>
@@ -58,6 +58,45 @@
         font-size: 400%;
         font-weight: bolder;
       }
+
+      /* FORM */
+      input:is([type="text"], [type="password"]) {
+        border-width: 1px;
+        border-radius: 5px;
+        border-color: white;
+
+        background-color: rgba(255,255,255, 0.1);
+
+        padding: 5px;
+
+        font-size: 105%;
+      }
+
+      input[type="submit"] {
+        border-width: 1px;
+        border-color: white;
+
+        width: 5rem;
+        margin-top: 10px;
+
+        align-self: center;
+
+        transform: scale(115%);
+      }
+
+      input[type="submit"]:hover {
+        transform: scale(125%);
+      }
+
+      form {
+        width: clamp(100px, 50%, 350px);;
+
+        display: flex;
+        flex-direction: column;
+
+        transform: scale(110%)
+      }
+
     </style>
 
   </head>
@@ -72,17 +111,24 @@
 
     <h2 style="margin-top: 2.5vh" id="header">Login</h2>
 
-    Login to your existing account by entering your credentials.<br><br>
-    If you do not already have an existing account, please register
-    <a href="/register">here</a><br><br>
+    <p style="color: #ff3333; margin-top: 10px;">
+      {% if error != "" %}
+        {{ error + "<br><br>" | safe }}
+      {% else %}
+        <br>
+      {% endif %}
+    </p>
 
     <form method="POST">
       <input type="text" name="user_id" placeholder="Username" required> <br>
-      <input type="password" name="password" placeholder="Password" required> <br><br>
-      <input type="submit" name="sub1" value="Login">
+      <input type="password" name="password" placeholder="Password" required> <br>
+      <input type="submit" name="sub1" value="ENTER">
     </form>
 
-    {{ error }}
+    <br><br>
+
+    <p> If you do not already have an existing account, please </p>
+    <p> register <a style="color: #3333ff; text-decoration: underline" href="/register">here</a> </p>
 
     <!-- TAILWIND -->
     <meta charset="UTF-8" />

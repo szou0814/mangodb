@@ -1,32 +1,133 @@
 <!DOCTYPE html>
 
+
 <html>
 
   <head>
 
-    <title>Pandemic Simulator Register</title>
+    <title> LOGIN </title>
 
     <!-- CUSTOM CSS -->
     <style>
+      /* BACKGROUND */
+      .bg {
+        background-image: url("/static/images/bg.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+
+        width: 100vw;
+        height: 100vh;
+
+        filter: brightness(40%);
+
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -1;
+      }
+
+      body {
+        color: white;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* ICON */
+      .icon {
+        height: 30vh;
+        margin-top: clamp(40px, 5%, 5%);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .glow {
+        border-radius: 20%;
+        box-shadow: rgba(100, 100, 100, 0.8) 0 0 90px 33px;
+      }
+
+      /* HEADER */
+      #header {
+        color: #1b0000;
+        text-shadow: 0 0 12px #800000, -1px -2px white;
+
+        font-size: 400%;
+        font-weight: bolder;
+      }
+
+      /* FORM */
+      input:is([type="text"], [type="password"]) {
+        border-width: 1px;
+        border-radius: 5px;
+        border-color: white;
+
+        background-color: rgba(255,255,255, 0.1);
+
+        padding: 5px;
+
+        font-size: 105%;
+      }
+
+      input[type="submit"] {
+        border-width: 1px;
+        border-color: white;
+
+        width: 5rem;
+        margin-top: 10px;
+
+        align-self: center;
+
+        transform: scale(115%);
+      }
+
+      input[type="submit"]:hover {
+        transform: scale(125%);
+      }
+
+      form {
+        width: clamp(100px, 50%, 350px);;
+
+        display: flex;
+        flex-direction: column;
+
+        transform: scale(110%)
+      }
+
     </style>
 
   </head>
 
   <body>
 
-    <h2>Register</h2>
+    <div class='bg'> </div>
+    <div class='icon'>
+      <img class="glow" src="/static/images/icon.png" style="height: 100%;
+                                                              width: auto;"> </img>
+    </div>
 
-    If you already have an account, please login
-    <a href="/">here</a>
-    <br><br>
+    <h2 style="margin-top: 2.5vh" id="header"> Register </h2>
+
+    <p style="color: #ff3333; margin-top: 10px;">
+      {% if error != "" %}
+        {{ error + "<br><br>" | safe }}
+      {% else %}
+        <br>
+      {% endif %}
+    </p>
 
     <form method="POST">
       <input type="text" name="user_id" placeholder="Username" required> <br>
-      <input type="password" name="password" placeholder="Password" required> <br><br>
-      <input type="submit" name="sub1" value="Create Account">
+      <input type="password" name="password" placeholder="Password" required> <br>
+      <input type="submit" name="sub1" value="ENTER">
     </form>
 
-    {{ error }}
+    <br><br>
+
+    <p> If you already have an account, please login <a style="color: #3333ff; text-decoration: underline" href="/">here</a> </p>
 
     <!-- TAILWIND -->
     <meta charset="UTF-8" />

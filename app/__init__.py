@@ -26,7 +26,7 @@ def login():
             else:
                 error_msg = "Password is incorrect."
         else:
-            error_msg = "User does not exist. Please register."
+            error_msg = "User does not exist."
     return render_template("login.html", error = error_msg)
 
 @app.route("/register", methods=["GET", "POST"])
