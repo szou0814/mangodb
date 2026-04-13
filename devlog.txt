@@ -50,3 +50,13 @@ MORE GRAPHS
   - added a scrubber and linked map graph to scrubber
   - added stacked area chart
   - added a button that sends map chart to a hard coded date
+
+sarahZ -- 2026-4-12 22:11
+- finished cleaning and parsing all datasets into sql 
+- created flask route and func for states_stats, finished mottaqi's template and js to show state data and stats upon click of us svg map
+- added accessors for datasets
+- did lots of debugging, fixed start simulation button disabling mech, fixed bugs in build_db.py
+- figured out concrete game logic/math & discussed w/ team
+- added launch codes
+- mottaqi set up us svg map & js 
+- wesley set up skeleton funcs for game logic/math
