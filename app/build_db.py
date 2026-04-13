@@ -56,7 +56,7 @@ def load_states():
                 states_totarea[state_id] = 0.0
                 states_totsvi[state_id] = 0.0
                 states_numcounties[state_id] = 0
-            states_totpop[state_id] += population
+            states_totpop[state_idAK] += population
             states_totarea[state_id] += area
             states_totsvi[state_id] += vulnerability_index
             states_numcounties[state_id] += 1
