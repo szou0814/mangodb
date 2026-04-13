@@ -18,7 +18,7 @@ Pre-requisites:
 
 Clone and enter repo:
 ```
-$ git clone git@github.com:szou0814/mangodb.git
+git clone git@github.com:szou0814/mangodb.git
 cd mangodb
 ```
 
@@ -39,7 +39,23 @@ venv_name\Scripts\activate
 
 Install packages and libraries:
 ```
-$ pip install -r requirements.txt
+pip install -r requirements.txt
+```
+
+Exit virtual environment:
+```
+deactivate
 ```
 
 ## Launch Codes:
+In terminal, access directory where project is stored and run the command:
+
+```
+cd mangodb/app
+python build_db.py
+python __init__.py
+```
+Then click the link:
+```
+http://127.0.0.1:5000
+```

@@ -74,7 +74,6 @@
                 const stateName = path.getAttribute('data-name');
                 document.getElementById('state-name-input').value = stateName;
                 document.getElementById('game-state-name-input').value = stateName;
-                document.getElementById('start-btn').disabled = false;
                 document.getElementById("state-select-form").submit();
               });
             });
@@ -86,6 +85,7 @@
                   path.style.fill = 'pink';
                   selected = path;
                 }
+                document.getElementById('start-btn').disabled = false;
               });
             }
           });
