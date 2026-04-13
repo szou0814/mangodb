@@ -43,3 +43,10 @@ found issue by doing gunicorn wsgi:app in venv
 found issue after consulting with joyce, lesson learned shouldve consulted earlier
 - added live site link and install guide
 - addded requirements.txt
+
+joyceL -- 2026-4-12 20:53
+MORE GRAPHS
+  - finished CSS for login and register
+  - added a scrubber and linked map graph to scrubber
+  - added stacked area chart
+  - added a button that sends map chart to a hard coded date
