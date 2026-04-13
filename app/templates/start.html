@@ -34,8 +34,40 @@
         
         <!-- map -->
         <div class="flex-1 basis-[580px] bg-black/45 border border-white/[0.08] rounded-2x1 p-5 mx-4 backdrop-blur-md">
-          <div class="text-[0.68rem] font-semibold tracking-[0.12em] uppercase text-gray-500 mb-3">Click a State</div>
+          <div class="text-[0.68rem] font-semibold tracking-[0.12em] uppercase text-gray-500 mb-3">Select a State</div>
           <div id="map-container" class="w-full"></div>
+        </div>
+
+        <!-- sidebar -->
+        <div class="flex flex-col gap-4 w-72">
+          
+          <!-- stats -->
+          <div id="state-stats" class="bg-black/50 border border-white/[0.08] rounded-2x1 p-5 backdrop-blur-md">
+            {% if state %}
+              <div class="text-x1 font-bold text-white mb-4 pb-3 border-b border-white/[0.08]">
+                {{ state }}
+              </div>
+              <div class="flex justify-between items-baseline gap-2 py-2 border-b border-white/[0.05]">
+                <span class="text-[0.78rem] text-gray-400 font-medium">Population</span>
+                <span id="state-population" class="text-[0.88rem] text-gray-200 font-semibold text-right">{{ "{:,}".format(population | int) }}</span>
+              </div>
+              <div class="flex justify-between items-baseline gap-2 py-2 border-b border-white/[0.05]">
+                <span class="text-[0.78rem] text-gray-400 font-medium">Density</span>
+                <span id="state-population-density" class="text-[0.88rem] text-gray-200 font-semibold text-right">{{ population_density }} / mi^2</span>
+              </div>
+              <div class="flex justify-between items-baseline gap-2 py-2 border-b border-white/[0.05]">
+                <span class="text-[0.78rem] text-gray-400 font-medium">Vulnerability Index</span>
+                <span id="state-vulnerability-index" class="text-[0.88rem] text-gray-200 font-semibold text-right">{{ vulnerability_index }}</span>
+              </div>
+              <div class="flex justify-between items-baseline gap-2 py-2 border-b border-white/[0.05]">
+                <span class="text-[0.78rem] text-gray-400 font-medium">Stringency Index</span>
+                <span id="state-stringency-index" class="text-[0.88rem] text-gray-200 font-semibold text-right">{{ stringency_index }}</span>
+              </div>
+              <div class="flex justify-between items-baseline gap-2 py-2">
+                <span class="text-[0.78rem] text-gray-400 font-medium">Stringency Date</span>
+                <span id="state-stringency-date" class="text-[0.88rem] text-gray-200 font-semibold text-right">{{ stringency_date }}</span>
+              </div>
+            {% endif %}
         </div>
 
       <form action="/logout" method="POST">
