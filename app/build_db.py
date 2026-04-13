@@ -41,13 +41,14 @@ def load_states():
         states_totsvi = {}
         states_numcounties = {}
         for row in reader:
-            state_id = row["STATE"].strip() #WESLEY: all the datsets have the full state name, so change logic.py to use full name instead of abbreviations 
+            state_id = row["STATE"].strip() #WESLEY: all the datsets have the full state name, so change logic.py to use full name instead of abbreviations
+                                            #SARAH: bro but the adj map uses the abbreviations TwT
             try:
                 vulnerability_index = float(row["RPL_THEMES"]) #rpl gives the percentile of vulnerability, spl gives the raw score but i think better to use rpl so we dont have to do additional math to normalize
-                population = int(row["E_TOTPOP"]) #E means estimate, the other field is M which is the margin of error 
+                population = int(row["E_TOTPOP"]) #E means estimate, the other field is M which is the margin of error
                 area = float(row["AREA_SQMI"])
             except (ValueError, TypeError):
-                continue 
+                continue
             if population <= 0 or area <= 0:
                 continue
             if state_id not in states_totpop:
@@ -68,8 +69,8 @@ def load_states():
     db.close()
 
 def format_date(date):
-    #oxford stringency dataset date format: 
-    #YYYY MM DD 
+    #oxford stringency dataset date format:
+    #YYYY MM DD
     return f"{date[:4]}-{date[4:6]}-{date[6:]}"
 
 def load_stringency():
@@ -94,7 +95,7 @@ def load_stringency():
     db.close()
 
 def load_covid():
-    #    c.execute (f"CREATE TABLE IF NOT EXISTS covid_stats(stats_id INTEGER PRIMARY KEY AUTOINCREMENT, state_id TEXT, date DATE, infected INTEGER, dead INTEGER, 
+    #    c.execute (f"CREATE TABLE IF NOT EXISTS covid_stats(stats_id INTEGER PRIMARY KEY AUTOINCREMENT, state_id TEXT, date DATE, infected INTEGER, dead INTEGER,
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
     with open("data/us-states.csv", newline="") as f:
@@ -128,7 +129,7 @@ def get_initstringency(state_id):
     result = c.fetchone()
     db.close()
     return result
-    
+
 #USER#############################################################################################
 #checks if username already in db
 def user_exists(username):
