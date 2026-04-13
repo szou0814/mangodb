@@ -113,19 +113,19 @@
 
     <p style="color: #ff3333; margin-top: 10px;">
       {% if error != "" %}
-        {{ error + "<br><br>" | safe }}
+        {{ error + "<p>&nbsp</p><p>&nbsp</p>" | safe }}
       {% else %}
-        <br>
+        <p>&nbsp</p>
       {% endif %}
     </p>
 
     <form method="POST">
-      <input type="text" name="user_id" placeholder="Username" required> <br>
-      <input type="password" name="password" placeholder="Password" required> <br>
+      <input type="text" name="user_id" placeholder="Username" required> <p>&nbsp</p>
+      <input type="password" name="password" placeholder="Password" required> <p>&nbsp</p>
       <input type="submit" name="sub1" value="ENTER">
     </form>
 
-    <br><br>
+    <p>&nbsp</p><p>&nbsp</p>
 
     <p> If you do not already have an existing account, please </p>
     <p> register <a style="color: #3333ff; text-decoration: underline" href="/register">here</a> </p>
