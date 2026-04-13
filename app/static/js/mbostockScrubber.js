@@ -83,7 +83,8 @@ export function Scrubber(values, {
   form.i.oninput = event => {
     if (event && event.isTrusted && running()) stop();
     form.value = values[form.i.valueAsNumber];
-    form.o.value = format(form.value, form.i.valueAsNumber, values);
+    let date = form.value;
+    form.o.value = format(`${date.toLocaleString('default', {month: 'short'})} ${date.getDate()} ${date.getFullYear()}`, form.i.valueAsNumber, values);
   };
 
   form.b.onclick = () => {
