@@ -27,7 +27,23 @@
   </head>
 
     <body>
+      <!-- background -->
       <div class="bg fixed inset-0 -z-10"></div>
+
+      <!-- nav -->
+      <nav class="flex items-center justify-between px-8 py-3.5 bg-black/55 backdrop-blur-md border-b border-white/[0.07]">
+        <div class="flex items-center gap-3">
+          <img src="/static/images/icon.png" alt="icon" class="h-9 w-auto rounded-lg">
+          <span class="text-lg font-bold tracking-wide text-white">Pandemic Simulator</span>
+        </div>
+        <form action="/logout" method="POST">
+          <button type="submit"
+            class="bg-white/[0.06] border border-white/20 text-gray-400 hover:bg-white/[0.14] hover:text-white
+                   px-5 py-1.5 rounded-md text-sm tracking-wider transition-colors cursor-pointer">
+            Sign Out
+          </button>
+        </form>
+      </nav>
 
       <!-- main content -->
       <div class="flex flex-wrap gap-5 px-6 pb-8 max-w-6x1 mx-auto w-full items-start">
