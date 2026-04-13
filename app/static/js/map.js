@@ -1,7 +1,7 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import * as topojson from "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm";
 
-export async function chart() {
+export async function map() {
   const us = await d3.json("https://cdn.jsdelivr.net/npm/us-atlas@1/us/10m.json");
 
   us.objects.lower48 = { // pulls the geometries of each state for later use

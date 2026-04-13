@@ -3,7 +3,7 @@ export function Scrubber(values, {
   initial = 0,
   direction = 1,
   delay = null,
-  autoplay = true,
+  autoplay = false,
   loop = true,
   loopDelay = null,
   alternate = false
