@@ -15,13 +15,13 @@ export async function map() {
 
   // creates the us
   svg.append("path")
-      .datum(topojson.merge(us, us.objects.lower48.geometries))
+      .datum(topojson.merge(us, us.objects.states.geometries))
       .attr("fill", "#ddd")
       .attr("d", d3.geoPath());
 
   // creates the borders
   svg.append("path")
-      .datum(topojson.mesh(us, us.objects.lower48, (a, b) => a !== b))
+      .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
       .attr("fill", "none")
       .attr("stroke", "white")
       .attr("stroke-linejoin", "round")
