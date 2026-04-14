@@ -207,6 +207,10 @@ marimo/_lsp/
 __marimo__/
 
 data.db
+<<<<<<< HEAD
+=======
+data/
+>>>>>>> 2940a0b17dbc29811fb1d0fb040987442cb5cb6c
 database.db
 cache.db
 *.db-journal

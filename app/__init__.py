@@ -7,7 +7,7 @@ import random
 import datetime
 import build_db as db
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+app.secret_key = 'hi'
 DB_FILE="database.db"
 
 @app.route("/", methods=["GET", "POST"])
