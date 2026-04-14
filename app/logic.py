@@ -2,7 +2,7 @@ import pandas as pd
 import urllib.request
 from datetime import datetime, timedelta
 from build_db import get_statestats, get_initstringency
-
+from random import random
 STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY",
           "LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND",
           "OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"]
@@ -70,11 +70,7 @@ def run_simulation(start_state: str):
     def infect(state: str, date):
         idx = STATES.index(state)
         # ill updatye this later with the regression
-        try:
-            cur_infected = pop.loc[state, f"{date-timedelta(days=1)}_infected"]
-        except Exception:
-            cur_infected = 1
-        return pop.loc[state, f"{date}_infected"] * (1 + (vulnerability_index[idx]*population_density[idx])/ cur_infected)
+        return pop.loc[state, f"{date}_infected"] * (1 + ((vulnerability_index[idx]*10)/population_density[idx])) + population_density[idx]
 
     def spread(state: str, date, adjacency_map, inf_state):
         # Calculates infections spreading
@@ -92,21 +88,19 @@ def run_simulation(start_state: str):
                 uninf_state = max(0, pop_state - inf_state)
 
                 total_uninfected = uninf_state + uninf_neighbor
-                print(inf_state)
                 if total_uninfected > 0:
 
                     # update this logic later with stringency and whatever
-                    # same as the #infected in state/ total uninvected in both states
-                    chance = inf_state / total_uninfected
-                    # spread like 100 people * chance
-                    spread_amount += round(chance * 100)
+                    chance = inf_neighbor / total_uninfected
+                    # spread like 1000 people * chance
+                    spread_amount += round(chance * 1000)
 
         return spread_amount
 
     def get_death_rate(state: str):
         # update this later with whaetver
         # make teh death rate a function of stringency r smtjh
-        return 0.02
+        return (random()* 0.023 + 0.0015)
 
     def calculate_deaths(state: str, current_date):
         week_ago = current_date - timedelta(days=7)
@@ -127,15 +121,15 @@ def run_simulation(start_state: str):
         for state in pop.index:
 
             # Update population based on deaths
-            new_pop = calculate_deaths(state, current_date)
+            new_pop = round(calculate_deaths(state, current_date))
             new_population_col.append(new_pop)
 
             # Update infected
             base_inf = infect(state, current_date) if pop.loc[state, f"{current_date}_infected"] > 0 else 0
             spread_inf = spread(state, current_date, adjacency_map, base_inf)
 
-            total_inf = base_inf + spread_inf
-            new_infected_col.append(min(total_inf, new_pop))
+            total_inf = round(base_inf + spread_inf)
+            new_infected_col.append((min(total_inf, new_pop)))
 
         new_cols_df = pd.DataFrame({
             f"{next_date}_infected": new_infected_col,
@@ -145,7 +139,7 @@ def run_simulation(start_state: str):
         pop = pd.concat([pop, new_cols_df], axis=1)
 
     # loop params, terminates if entire us is infected
-    max_iters = 100
+    max_iters = 1000
     curr_date = start_date
 
     print("Running simulation...")
@@ -165,6 +159,6 @@ def run_simulation(start_state: str):
 
 if __name__ == "__main__":
     final_df = run_simulation("NY")
-    print(final_df)
-    #print(final_df.iloc[:, [-4, -3, -2, -1]].head())
+    #print(final_df)
+    print(final_df.iloc[:, [-4, -3, -2, -1]])
 #print(get_statestats(convert("NY"))[1])
