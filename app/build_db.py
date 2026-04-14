@@ -26,8 +26,8 @@ def create_tbs():
     c.execute (f"CREATE TABLE IF NOT EXISTS STATES(state_id TEXT PRIMARY KEY, vulnerability_index FLOAT, population INTEGER, population_density FLOAT)")
     c.execute (f"CREATE TABLE IF NOT EXISTS stringency(stringency_id INTEGER PRIMARY KEY AUTOINCREMENT, state_id TEXT, date DATE, stringency_index FLOAT, FOREIGN KEY (state_id) REFERENCES states(state_id))")
     c.execute (f"CREATE TABLE IF NOT EXISTS covid_stats(stats_id INTEGER PRIMARY KEY AUTOINCREMENT, state_id TEXT, date DATE, infected INTEGER, dead INTEGER, FOREIGN KEY (state_id) REFERENCES states(state_id))")
+    c.execute (f"CREATE TABLE IF NOT EXISTS spread_points(point_id INTEGER PRIMARY KEY AUTOINCREMENT, run_id INTEGER, state TEXT date DATE, x FLOAT, y FLOAT, type TEXT, FOREIGN KEY (run_id) REFERENCES runs(run_id))")
     c.execute (f"CREATE TABLE IF NOT EXISTS runs(run_id INTEGER PRIMARY KEY AUTOINCREMENT, state_id TEXT, total_infected INTEGER, total_dead INTEGER, FOREIGN KEY (state_id) REFERENCES states(state_id))")
-
     db.commit()
     db.close()
 
@@ -130,6 +130,24 @@ def get_initstringency(state_id):
     db.close()
     return result
 
+#need to get state bounds/coords from svg
+#modify these as we figure out spread 
+
+def get_points(run_id):
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+    c.execute("SELECT state, date, x, y, type FROM spread_points WHERE run_id = ? ORDER BY date ASC", (run_id,))
+    results = c.fetchall()
+    db.close()
+    return result
+
+def add_point(run_id, state, date, x, y, type):
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+    c.execute ("INSERT INTO spread_points(run_id, state, date, x, y, type) VALUES (?, ?, ?, ?, ?, ?)", (run_id, state, date, x, y, type))
+    db.commit()
+    db.close()
+    
 #USER#############################################################################################
 #checks if username already in db
 def user_exists(username):

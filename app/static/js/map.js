@@ -6,12 +6,12 @@ export async function map() {
 
   us.objects.lower48 = { // pulls the geometries of each state for later use
     type: "GeometryCollection",
-    geometries: us.objects.states.geometries.filter(d => d.id !== "02" && d.id !== "15")
+    geometries: us.objects.states.geometries
   };
 
   // INITIALIZES THE SVG
   const svg = d3.create("svg")
-      .attr("viewBox", [0, 0, 960, 600]); // sizes the SVG
+      .attr("viewBox", [0, 0, 960, 600]); // sizes view box
 
   // creates the us
   svg.append("path")

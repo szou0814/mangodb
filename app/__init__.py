@@ -14,7 +14,7 @@ DB_FILE="database.db"
 def login():
     error_msg = ""
     if "user_id" in session:
-        return redirect(url_for("start"))
+        return redirect(url_for("home"))
     if request.method == "POST":
         username = request.form.get("user_id").strip()
         password = request.form.get("password").strip()
@@ -33,7 +33,7 @@ def login():
 def register():
     error_msg = ""
     if "user_id" in session:
-        return redirect(url_for("start"))
+        return redirect(url_for("home"))
 
     if request.method == "POST":
         username = request.form.get("user_id").strip()
