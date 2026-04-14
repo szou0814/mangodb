@@ -40,7 +40,7 @@ def run_simulation(start_state: str):
     # dataframe with the states as rows and cols being datetimes
     pop = pd.DataFrame(index=valid_states)
 
-    start_date = datetime.now().date()
+    start_date = datetime(2020,1,20)
     pop[f"{start_date}_infected"] = 0.0
 
     def get_initial_population(state: str):
