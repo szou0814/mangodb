@@ -60,3 +60,11 @@ sarahZ -- 2026-4-12 22:11
 - added launch codes
 - mottaqi set up us svg map & js 
 - wesley set up skeleton funcs for game logic/math
+
+sarahZ -- 2026-4-13 21:45
+- stopped tracking datasets and database, updated gitignore
+- fixed some bugs/typos in __init__.py and build_db.py
+- created table, getter, and adder database to track spread points for scrubber
+- started html/css on game.html
+- updating and fixing remote server
+- dataviz discussion: add scale of # infected & # dead to spread points 
