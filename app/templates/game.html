@@ -31,6 +31,11 @@
         background: white;
       }
 
+      #graphs {
+        height: 100%;
+        width: 80vh;
+      }
+
     </style>
 
   </head>
@@ -73,11 +78,11 @@
     </div>
 
     <!-- GRAPHS -->
-    <div id="graphs">
+    <div id="graphs" style="display: flex; flex-direction: column; background-color: red">
 
-     <div id="map"></div>
+     <div id="map" style="background-color: green"></div>
 
-     <div id="stackedLine"></div>
+     <div id="stackedLine" style="background-color: green; width: 50%;"></div>
 
     </div>
 
@@ -94,15 +99,17 @@
       async function generateMap() {
         window.mapElem = await map(); // everything below await will not run until this promise is complete
 
-        document.getElementById('map').innerHTML = "";
-        document.getElementById('map').append(mapElem);
+        let cont = document.getElementById('map');
+        cont.innerHTML = "";
+        cont.append(mapElem);
       }
 
       async function generateStackedLine() {
         window.stackedLineElem = await stackedLine();
 
-        document.getElementById('stackedLine').innerHTML = "";
-        document.getElementById('stackedLine').append(stackedLineElem);
+        let cont = document.getElementById('stackedLine');
+        cont.innerHTML = "";
+        cont.append(stackedLineElem);
       }
 
       async function generateGraphs() {

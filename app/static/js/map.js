@@ -11,7 +11,7 @@ export async function map() {
 
   // INITIALIZES THE SVG
   const svg = d3.create("svg")
-      .attr("viewBox", [0, 0, 960, 600]); // sizes the SVG
+      .attr("viewBox", [0, 0, 960, 600]); // sizes view box
 
   // creates the us
   svg.append("path")
