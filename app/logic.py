@@ -93,7 +93,7 @@ def run_simulation(start_state: str):
                     # update this logic later with stringency and whatever
                     chance = inf_neighbor / total_uninfected
                     # spread like 1000 people * chance
-                    spread_amount += round(chance * 1000)
+                    spread_amount += round(chance * 2000)
 
         return spread_amount
 
@@ -139,12 +139,12 @@ def run_simulation(start_state: str):
         pop = pd.concat([pop, new_cols_df], axis=1)
 
     # loop params, terminates if entire us is infected
-    max_iters = 1000
+    max_iters = 156
     curr_date = start_date
 
     print("Running simulation...")
     for i in range(max_iters):
-        next_date = curr_date + timedelta(days=1)
+        next_date = curr_date + timedelta(days=7)
         step(curr_date, next_date, adj_map)
 
         total_infected = pop[f"{next_date}_infected"].sum()
