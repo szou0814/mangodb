@@ -6,7 +6,7 @@ export async function map() {
 
   us.objects.lower48 = { // pulls the geometries of each state for later use
     type: "GeometryCollection",
-    geometries: us.objects.states.geometries.filter(d => d.id !== "02" && d.id !== "15")
+    geometries: us.objects.states.geometries
   };
 
   // INITIALIZES THE SVG
