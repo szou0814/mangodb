@@ -25,9 +25,9 @@ function StackedAreaChart(data, {
   colors = d3.schemeTableau10, // array of colors for z
 } = {}) {
   // Compute values.
-  const X = d3.map(data, x);
+  var X = d3.map(data, x);
   const Y = d3.map(data, y);
-  const Z = d3.map(data, z);
+  var Z = d3.map(data, z);
 
   // Compute default x- and z-domains, and unique the z-domain.
   if (xDomain === undefined) xDomain = d3.extent(X);
@@ -54,13 +54,13 @@ function StackedAreaChart(data, {
   if (yDomain === undefined) yDomain = d3.extent(series.flat(2));
 
   // Construct scales and axes.
-  const xScale = xType(xDomain, xRange);
+  var xScale = xType(xDomain, xRange);
   const yScale = yType(yDomain, yRange);
   const color = d3.scaleOrdinal(zDomain, colors);
   const xAxis = d3.axisBottom(xScale).ticks(width / 80, xFormat).tickSizeOuter(0);
   const yAxis = d3.axisLeft(yScale).ticks(height / 50, yFormat);
 
-  const area = d3.area()
+  var area = d3.area()
       .x(({i}) => xScale(X[i]))
       .y0(([y1]) => yScale(y1))
       .y1(([, y2]) => yScale(y2));
@@ -76,7 +76,7 @@ function StackedAreaChart(data, {
     .data(zDomain)
     .enter()
     .append("rect")
-    .attr("x", function(d,i) { return marginLeft + (Math.floor(i/6) * (zDomain.size/6 * 100)) })
+    .attr("x", function(d,i) { return marginLeft + (Math.floor(i/6) * (zDomain.size/6 * 110)) })
     .attr("y", function(d,i) { return Math.floor(i%6)*(size+5) })
     .attr("width", size)
     .attr("height", size)
@@ -86,13 +86,13 @@ function StackedAreaChart(data, {
     .data(zDomain)
     .enter()
     .append("text")
-    .attr("x", function(d,i) { return marginLeft + ((size*1.2) + (Math.floor(i/6) * (zDomain.size/6 * 100))) })
-    .attr("y", function(d,i) { return Math.floor(i%6)*(size+5) + (size/2) })
+    .attr("x", function(d,i) { return marginLeft + ((size*1.2) + (Math.floor(i/6) * (zDomain.size/6 * 110))) })
+    .attr("y", function(d,i) { return Math.floor(i%6)*(size+5) + size/1.2 })
     .style("fill", 'white')
     .text(function(d) { return d })
     .attr("text-anchor", "left")
     .style("alignment-baseline", "middle")
-    .style("font-size", `${zDomain.size/6 * 6}`)
+    .style("font-size", `${zDomain.size/6 * 4}`)
 
   svg.append("g")
       .attr("transform", `translate(${marginLeft},0)`)
@@ -115,10 +115,48 @@ function StackedAreaChart(data, {
       .attr("transform", `translate(0,${height - marginBottom})`)
       .call(xAxis);
 
-  return svg.node();
+  return Object.assign(svg.node(), {
+    update(date) {
+      let temp = data.filter(d => d.date <= date);
+
+      X = d3.map(temp, x);
+      Z = d3.map(temp, z);
+      xDomain = d3.extent(X);
+      zDomain = Z;
+
+      xScale = xType(xDomain, xRange);
+      area = d3.area()
+          .x(({i}) => xScale(X[i]))
+          .y0(([y1]) => yScale(y1))
+          .y1(([, y2]) => yScale(y2));
+
+      svg.selectAll("g").remove();
+
+      svg.append("g")
+          .attr("transform", `translate(${marginLeft},0)`)
+          .call(yAxis)
+          .call(g => g.select(".domain").remove())
+          .call(g => g.selectAll(".tick line").clone()
+              .attr("x2", width - marginLeft - marginRight)
+              .attr("stroke-opacity", 0.1))
+
+      svg.append("g")
+        .selectAll("path")
+        .data(series)
+        .join("path")
+          .attr("fill", ([{i}]) => color(Z[i]))
+          .attr("d", area)
+        .append("title")
+          .text(([{i}]) => Z[i]);
+
+      svg.append("g")
+          .attr("transform", `translate(0,${height - marginBottom})`)
+          .call(xAxis);
+    }
+  });
 }
 
-export function stackedLine(date) {
+export function stackedLine() {
   let unemployment = [
     Object.assign({date: new Date('1962-04-01')}, {industry: "Wholesale and Retail Trade"}, {unemployed: 1000}),
     Object.assign({date: new Date('1962-04-01')}, {industry: "Manufacturing"}, {unemployed: 734}),
@@ -162,9 +200,9 @@ export function stackedLine(date) {
     Object.assign({date: new Date('1972-10-01')}, {industry: "Information"}, {unemployed: 140}),
   ]
 
-  let data = unemployment.filter(d => d.date <= date)
+  // let data = unemployment.filter(d => d.date <= date)
 
-  return StackedAreaChart(data, {
+  return StackedAreaChart(unemployment, {
     x: d => d.date,
     y: d => d.unemployed,
     z: d => d.industry,

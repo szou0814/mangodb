@@ -140,30 +140,36 @@
         document.getElementById('map').append(mapElem);
       }
 
-        async function generateStackedLine(date) {
-        window.stackedLineElem = await stackedLine(date);
+        async function generateStackedLine() {
+        window.stackedLineElem = await stackedLine();
 
         document.getElementById('stackedLine').innerHTML = "";
         document.getElementById('stackedLine').append(stackedLineElem);
       }
 
-      generateMap();
+      async function generateGraphs() {
+        generateMap();
+        generateStackedLine();
+      }
+
+      await generateGraphs();
 
       var dates = [];
       data.forEach(point => {
         dates.push(point.date)
       })
 
-      function updateStackedLine(date) {
-        generateStackedLine(date);
-      }
+      // function updateStackedLine(date) {
+      //   generateStackedLine(date);
+      // }
 
       const graphScrubber = Scrubber(dates, {delay: 80});
       document.getElementById('util').append(graphScrubber);
 
       graphScrubber.addEventListener("input", function() {
         mapElem.update(graphScrubber.value);
-        updateStackedLine(graphScrubber.value);
+        stackedLineElem.update(graphScrubber.value);
+        // updateStackedLine(graphScrubber.value);
       })
     </script>
 
