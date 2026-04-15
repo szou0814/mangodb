@@ -8,7 +8,7 @@ function StackedAreaChart(data, {
   marginRight = 30, // right margin, in pixels
   marginBottom = 30, // bottom margin, in pixels
   marginLeft = 40, // left margin, in pixels
-  width = 640, // outer width, in pixels
+  width = 740, // outer width, in pixels
   height = 400, // outer height, in pixels
   xType = d3.scaleUtc, // type of x-scale
   xDomain, // [xmin, xmax]

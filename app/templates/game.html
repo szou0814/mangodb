@@ -44,15 +44,18 @@
         width: 100%;
 
         display: flex;
-        flex-direction: row;
+        flex-flow: row wrap;
+        gap: 1%;
 
         align-items: center;
         justify-content: center;
-        padding: 1%;
+        padding: 2% 1% 0 1%;
+
       }
 
-      #map, #stackedLine {
-        width: 50%;
+      #map {
+        width: clamp(700px, 50%, 50%);
+        padding: 2% 0 2% 0;
 
         display: flex;
         align-items: center;
@@ -60,7 +63,12 @@
       }
 
       #stackedLine {
-        transform: scale(110%);
+        width: clamp(700px, 43%, 43%);
+        padding: 2% 0 2% 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
     </style>
