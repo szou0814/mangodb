@@ -68,3 +68,9 @@ sarahZ -- 2026-4-13 21:45
 - started html/css on game.html
 - updating and fixing remote server
 - dataviz discussion: add scale of # infected & # dead to spread points 
+
+sarahZ -- 2026-4-13 22:05
+- fixed remote server error with datasets, now up and running!
+- math discussion: calculations take too long with daily tick rate because of datasets, updated tick rate to be one week and averaging weekly data points in datasets
+- wesley worked on math calculation functions, making them more efficient and faster
+- mottaqi worked on html/css formatting of game.html
