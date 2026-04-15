@@ -4,18 +4,15 @@
 
   <head>
 
-<<<<<<< HEAD
-    <title>mangodb Pandemic Simulator</title>
-=======
     <title>Simulator</title>
     <!-- TAILWIND -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
->>>>>>> 46c72bb54a288fed30005376e93cbd91c81940d2
 
     <!-- CUSTOM CSS -->
     <style>
+
       .bg {
         background-image: url("/static/images/bg.jpg");
         background-size: cover;
@@ -24,6 +21,7 @@
       }
 
       #but1 {
+        border-width: 3px;
         background-color: rgba(180,0,0,0.6);
         padding: 4px;
         border-width: 1px;
@@ -49,7 +47,6 @@
     <div class="bg fixed inset-0 -z-10"></div>
 
     <!-- nav -->
-<<<<<<< HEAD
 <nav class="flex items-center justify-between px-8 py-3.5 bg-black/55 backdrop-blur-md border-b border-white/[0.07]">
   <div class="flex items-center gap-3">
     <img src="/static/images/icon.png" alt="icon" class="h-9 w-auto rounded-lg icon-glow">
@@ -64,52 +61,40 @@
   </form>
 </nav>
 
+<div class="flex justify-between items-center px-4 py-2 border-b bg-red-900 mb-4">
+  <div class="flex gap-6 text-sm">
+    <span>State: <strong></strong></span>
+    <span>Total Infected: <strong></strong></span>
+    <span>Total Dead: <strong></strong></span>
+    <span>Stringency Index: <strong></strong></span>
+    <span>Social Vulnerability Index: <strong></strong></span>
+  </div>
+  <div class="text-sm">
+    Date: <strong></strong>
+  </div>
+
+</div>
+
+<!-- UTIL -->
+<div id="util">
+  <button id="but1" onclick="updateGraph()"> Test Update Graph </button>
+</div>
+
     <!-- GRAPHS -->
     <div id="graphs">
 
       <div id="map">
-=======
-    <nav class="flex items-center justify-between px-8 py-3.5 bg-black/55 backdrop-blur-md border-b border-white/[0.07]">
-      <div class="flex items-center gap-3">
-        <img src="/static/images/icon.png" alt="icon" class="h-9 w-auto rounded-lg icon-glow">
-        <span class="text-lg font-bold tracking-wide text-white glow">mongodb Pandemic Simulator</span>
->>>>>>> 46c72bb54a288fed30005376e93cbd91c81940d2
       </div>
-      <form action="/logout" method="POST">
-        <button type="submit"
-        class="bg-white/[0.06] border border-white/20 text-gray-400 hover:bg-white/[0.14] hover:text-white
-        px-5 py-1.5 rounded-md text-sm tracking-wider transition-colors cursor-pointer">
-          Sign Out
-        </button>
-      </form>
-    </nav>
 
-    <div class="flex justify-between items-center px-4 py-2 border-b bg-red-900 mb-4">
-      <div class="flex gap-6 text-sm">
-        <span>State: <strong></strong></span>
-        <span>Total Infected: <strong></strong></span>
-        <span>Total Dead: <strong></strong></span>
-        <span>Stringency Index: <strong></strong></span>
-        <span>Social Vulnerability Index: <strong></strong></span>
+      <div id="stackedLine">
       </div>
-      <div class="text-sm">
-        Date: <strong></strong>
-      </div>
+
     </div>
 
-    <!-- UTIL -->
-    <div id="util">
-      <button id="but1" onclick="updateGraph()">Test Update Graph</button>
-    </div>
-
-    <!-- GRAPHS -->
-    <div id="graphs" style="display: flex; flex-direction: column; background-color: red">
-
-     <div id="map" style="background-color: green"></div>
-
-     <div id="stackedLine" style="background-color: green; width: 50%;"></div>
-
-    </div>
+    <!-- TAILWIND -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     <!-- D3.JS IMPLEMENTATION -->
     <script type="module">
@@ -124,17 +109,15 @@
       async function generateMap() {
         window.mapElem = await map(); // everything below await will not run until this promise is complete
 
-        let cont = document.getElementById('map');
-        cont.innerHTML = "";
-        cont.append(mapElem);
+        document.getElementById('map').innerHTML = "";
+        document.getElementById('map').append(mapElem);
       }
 
       async function generateStackedLine() {
         window.stackedLineElem = await stackedLine();
 
-        let cont = document.getElementById('stackedLine');
-        cont.innerHTML = "";
-        cont.append(stackedLineElem);
+        document.getElementById('stackedLine').innerHTML = "";
+        document.getElementById('stackedLine').append(stackedLineElem);
       }
 
       async function generateGraphs() {
