@@ -4,7 +4,7 @@ function StackedAreaChart(data, {
   x = ([x]) => x, // given d in data, returns the (ordinal) x-value
   y = ([, y]) => y, // given d in data, returns the (quantitative) y-value
   z = () => 1, // given d in data, returns the (categorical) z-value
-  marginTop = 20, // top margin, in pixels
+  marginTop = 130, // top margin, in pixels
   marginRight = 30, // right margin, in pixels
   marginBottom = 30, // bottom margin, in pixels
   marginLeft = 40, // left margin, in pixels
@@ -71,6 +71,29 @@ function StackedAreaChart(data, {
       .attr("viewBox", [0, 0, width, height])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
+  const size = zDomain.size/6 * 7
+  svg.selectAll("legendSquares")
+    .data(zDomain)
+    .enter()
+    .append("rect")
+    .attr("x", function(d,i) { return marginLeft + (Math.floor(i/6) * (zDomain.size/6 * 100)) })
+    .attr("y", function(d,i) { return Math.floor(i%6)*(size+5) })
+    .attr("width", size)
+    .attr("height", size)
+    .style("fill", function(d) { return color(d) })
+
+  svg.selectAll("legendLabels")
+    .data(zDomain)
+    .enter()
+    .append("text")
+    .attr("x", function(d,i) { return marginLeft + ((size*1.2) + (Math.floor(i/6) * (zDomain.size/6 * 100))) })
+    .attr("y", function(d,i) { return Math.floor(i%6)*(size+5) + (size/2) })
+    .style("fill", 'white')
+    .text(function(d) { return d })
+    .attr("text-anchor", "left")
+    .style("alignment-baseline", "middle")
+    .style("font-size", `${zDomain.size/6 * 6}`)
+
   svg.append("g")
       .attr("transform", `translate(${marginLeft},0)`)
       .call(yAxis)
@@ -78,12 +101,6 @@ function StackedAreaChart(data, {
       .call(g => g.selectAll(".tick line").clone()
           .attr("x2", width - marginLeft - marginRight)
           .attr("stroke-opacity", 0.1))
-      .call(g => g.append("text")
-          .attr("x", -marginLeft)
-          .attr("y", 10)
-          .attr("fill", "currentColor")
-          .attr("text-anchor", "start")
-          .text(yLabel));
 
   svg.append("g")
     .selectAll("path")
@@ -98,7 +115,7 @@ function StackedAreaChart(data, {
       .attr("transform", `translate(0,${height - marginBottom})`)
       .call(xAxis);
 
-  return Object.assign(svg.node(), {scales: {color}});
+  return svg.node();
 }
 
 export function stackedLine() {
@@ -149,7 +166,6 @@ export function stackedLine() {
     x: d => d.date,
     y: d => d.unemployed,
     z: d => d.industry,
-    yLabel: "↑ Unemployed persons",
     height: 500
   })
 }
