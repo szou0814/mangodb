@@ -131,43 +131,43 @@ def get_initstringency(state_id):
     db.close()
     return result
 
-def get_initrates(state_id):
-    db = sqlite3.connect(DB_FILE)
-    c = db.cursor()
-    c.execute("SELECT date, infected, dead FROM covid_stats WHERE state_id = ? AND (date = '2020-03-01' OR date = '2020-03-08' ORDER BY date ASC", (state_id,))
-    results = c.fetchall()
-    db.close()
-    d1Infected = results[0][1]
-    d7Infected = results[1][1]
-    d7Dead = results[1][2]
-    infectRate = d7Infected/d1Infected
-    deadRate = d7Dead/d7Infected
-    return(infectRate, deadRate)
+# def get_initrates(state_id):
+#     db = sqlite3.connect(DB_FILE)
+#     c = db.cursor()
+#     c.execute("SELECT date, infected, dead FROM covid_stats WHERE state_id = ? AND (date = '2020-03-01' OR date = '2020-03-08' ORDER BY date ASC", (state_id,))
+#     results = c.fetchall()
+#     db.close()
+#     d1Infected = results[0][1]
+#     d7Infected = results[1][1]
+#     d7Dead = results[1][2]
+#     infectRate = d7Infected/d1Infected
+#     deadRate = d7Dead/d7Infected
+#     return(infectRate, deadRate)
 
-def get_newrates(stringency, vulnerability, date):
-    db = sqlite3.connect(DB_FILE)
-    c = db.cursor()
-    c.execute("SELECT st.state_id, st.stringency_index, s.vulnerability_index FROM stringency st JOIN STATES s ON st.state_id = s.state_id WHERE st.date = ?", (date,))
-    results = c.fetchall()
-    bestMatch = None
-    bestDist = float("inf")
-    for state_id, stateStringency, stateVulnerability in results:
-        dist = ((stateStringency - stringency) ** 2 + (stateVulnerability - vulnerability) ** 2) ** 0.5
-        if dist < bestDist:
-            bestDist = dist
-            bestMatch = state_id
-    prev = (datetime.strptime(date, "%Y-%m-%d") - timedelta(days=7)).strftime("%Y-%m-%d")
-    c.execute("SELECT infected, deaths FROM covid_date WHERE state_id = ? AND date = ?", (bestMatch, date))
-    current = c.fetchone()
-    c.execute("SELECT infected, deaths FROM covid-date WHERE state_id = ? AND date = ?", (bestMatch, prev))
-    previous = c.fetchone()
-    db.close()
-    infectRate = current[0]/previous[0]
-    deadRate = current[1]/previous[1]
-    return (infectRate, deadRate)
-    
+# def get_newrates(stringency, vulnerability, date):
+#     db = sqlite3.connect(DB_FILE)
+#     c = db.cursor()
+#     c.execute("SELECT st.state_id, st.stringency_index, s.vulnerability_index FROM stringency st JOIN STATES s ON st.state_id = s.state_id WHERE st.date = ?", (date,))
+#     results = c.fetchall()
+#     bestMatch = None
+#     bestDist = float("inf")
+#     for state_id, stateStringency, stateVulnerability in results:
+#         dist = ((stateStringency - stringency) ** 2 + (stateVulnerability - vulnerability) ** 2) ** 0.5
+#         if dist < bestDist:
+#             bestDist = dist
+#             bestMatch = state_id
+#     prev = (datetime.strptime(date, "%Y-%m-%d") - timedelta(days=7)).strftime("%Y-%m-%d")
+#     c.execute("SELECT infected, deaths FROM covid_date WHERE state_id = ? AND date = ?", (bestMatch, date))
+#     current = c.fetchone()
+#     c.execute("SELECT infected, deaths FROM covid-date WHERE state_id = ? AND date = ?", (bestMatch, prev))
+#     previous = c.fetchone()
+#     db.close()
+#     infectRate = current[0]/previous[0]
+#     deadRate = current[1]/previous[1]
+#     return (infectRate, deadRate)
+
 #need to get state bounds/coords from svg
-#modify these as we figure out spread 
+#modify these as we figure out spread
 
 def get_points(run_id):
     db = sqlite3.connect(DB_FILE)
@@ -183,7 +183,7 @@ def add_point(run_id, state, date, x, y, type):
     c.execute ("INSERT INTO spread_points(run_id, state, date, x, y, type) VALUES (?, ?, ?, ?, ?, ?)", (run_id, state, date, x, y, type))
     db.commit()
     db.close()
-    
+
 #USER#############################################################################################
 #checks if username already in db
 def user_exists(username):

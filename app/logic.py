@@ -26,18 +26,20 @@ def get_adjacency():
         if line and not line.startswith('#'):
             parts = line.strip().split(',')
             state = parts[0]
-            neighbors = parts[1:] if len(parts) > 1 else []
+            neighbors =
+    def get_initial_population(state: str):
+        return get_statestats(convert(state))[1]parts[1:] if len(parts) > 1 else []
             adj_map[state] = neighbors
     return adj_map
 
-adj_map = get_adjacency()
-# Keep states that are in adjacency map
-valid_states = [s for s in STATES if s in adj_map]
 
 
 
-def run_simulation(start_state: str):
+
+
+def run_simulation(start_state: str, adj_map):
     # dataframe with the states as rows and cols being datetimes
+    valid_states = [s for s in STATES if s in adj_map]
     pop = pd.DataFrame(index=valid_states)
 
     start_date = datetime(2020,1,20)
@@ -95,7 +97,7 @@ def run_simulation(start_state: str):
                     # spread like 1000 people * chance
                     spread_amount += round(chance * 2000)
 
-        return spread_amount
+        return spread_amountadj_map = get_adjacency()
 
     def get_death_rate(state: str):
         # update this later with whaetver
@@ -158,7 +160,8 @@ def run_simulation(start_state: str):
     return pop
 
 if __name__ == "__main__":
-    final_df = run_simulation("NY")
+    adj_map = get_adjacency()
+    final_df = run_simulation("NY", adj_map)
     #print(final_df)
     print(final_df.iloc[:, [-4, -3, -2, -1]])
 #print(get_statestats(convert("NY"))[1])
