@@ -26,7 +26,7 @@ function StackedAreaChart(data, {
 } = {}) {
   // Compute values.
   var X = d3.map(data, x);
-  const Y = d3.map(data, y);
+  var Y = d3.map(data, y);
   var Z = d3.map(data, z);
 
   // Compute default x- and z-domains, and unique the z-domain.
@@ -35,14 +35,14 @@ function StackedAreaChart(data, {
   zDomain = new d3.InternSet(zDomain);
 
   // Omit any data not present in the z-domain.
-  const I = d3.range(X.length).filter(i => zDomain.has(Z[i]));
+  var I = d3.range(X.length).filter(i => zDomain.has(Z[i]));
 
   // Compute a nested array of series where each series is [[y1, y2], [y1, y2],
   // [y1, y2], …] representing the y-extent of each stacked rect. In addition,
   // each tuple has an i (index) property so that we can refer back to the
   // original data point (data[i]). This code assumes that there is only one
   // data point for a given unique x- and z-value.
-  const series = d3.stack()
+  var series = d3.stack()
       .keys(zDomain)
       .value(([x, I], z) => Y[I.get(z)])
       .order(order)
@@ -54,10 +54,11 @@ function StackedAreaChart(data, {
   if (yDomain === undefined) yDomain = d3.extent(series.flat(2));
 
   // Construct scales and axes.
-  var xScale = xType(xDomain, xRange);
+  var xScale = xType(0, xRange);
   const yScale = yType(yDomain, yRange);
-  const color = d3.scaleOrdinal(zDomain, colors);
-  const xAxis = d3.axisBottom(xScale).ticks(width / 80, xFormat).tickSizeOuter(0);
+  var color = d3.scaleOrdinal(zDomain, colors);
+
+  var xAxis = d3.axisBottom(xScale).ticks(width / 80, xFormat).tickSizeOuter(0);
   const yAxis = d3.axisLeft(yScale).ticks(height / 50, yFormat);
 
   var area = d3.area()
@@ -102,27 +103,32 @@ function StackedAreaChart(data, {
           .attr("x2", width - marginLeft - marginRight)
           .attr("stroke-opacity", 0.1))
 
-  svg.append("g")
-    .selectAll("path")
-    .data(series)
-    .join("path")
-      .attr("fill", ([{i}]) => color(Z[i]))
-      .attr("d", area)
-    .append("title")
-      .text(([{i}]) => Z[i]);
-
-  svg.append("g")
+  var xAxisGroup = svg.append("g")
       .attr("transform", `translate(0,${height - marginBottom})`)
       .call(xAxis);
+
+  var areaGroup = svg.append('g');
 
   return Object.assign(svg.node(), {
     update(date) {
       let temp = data.filter(d => d.date <= date);
 
       X = d3.map(temp, x);
+      Y = d3.map(data, y);
       Z = d3.map(temp, z);
       xDomain = d3.extent(X);
       zDomain = Z;
+      zDomain = new d3.InternSet(zDomain);
+
+      I = d3.range(X.length).filter(i => zDomain.has(Z[i]));
+
+      series = d3.stack()
+          .keys(zDomain)
+          .value(([x, I], z) => Y[I.get(z)])
+          .order(order)
+          .offset(offset)
+        (d3.rollup(I, ([i]) => i, i => X[i], i => Z[i]))
+        .map(s => s.map(d => Object.assign(d, {i: d.data[1].get(s.key)})));
 
       xScale = xType(xDomain, xRange);
       area = d3.area()
@@ -130,28 +136,33 @@ function StackedAreaChart(data, {
           .y0(([y1]) => yScale(y1))
           .y1(([, y2]) => yScale(y2));
 
-      svg.selectAll("g").remove();
+      color = d3.scaleOrdinal(zDomain, colors);
 
-      svg.append("g")
-          .attr("transform", `translate(${marginLeft},0)`)
-          .call(yAxis)
-          .call(g => g.select(".domain").remove())
-          .call(g => g.selectAll(".tick line").clone()
-              .attr("x2", width - marginLeft - marginRight)
-              .attr("stroke-opacity", 0.1))
+      xAxis = d3.axisBottom(xScale).ticks(width / 80, xFormat).tickSizeOuter(0);
 
-      svg.append("g")
+      xAxisGroup.remove();
+      areaGroup.remove();
+
+      areaGroup = svg.append("g")
         .selectAll("path")
         .data(series)
         .join("path")
           .attr("fill", ([{i}]) => color(Z[i]))
-          .attr("d", area)
-        .append("title")
+          .attr("d", area);
+
+      areaGroup.append("title")
           .text(([{i}]) => Z[i]);
 
-      svg.append("g")
-          .attr("transform", `translate(0,${height - marginBottom})`)
-          .call(xAxis);
+      if (areaGroup.size() !== 0) {
+        xAxisGroup = svg.append("g")
+            .attr("transform", `translate(0,${height - marginBottom})`)
+            .call(xAxis);
+      } else {
+        xAxis = d3.axisBottom(xScale).ticks(0);
+        xAxisGroup = svg.append("g")
+            .attr("transform", `translate(0,${height - marginBottom})`)
+            .call(xAxis);
+      }
     }
   });
 }
@@ -172,20 +183,20 @@ export function stackedLine() {
     Object.assign({date: new Date('1962-04-01')}, {industry: "Information"}, {unemployed: 125}),
     Object.assign({date: new Date('1962-04-01')}, {industry: "Agriculture"}, {unemployed: 154}),
     Object.assign({date: new Date('1962-04-01')}, {industry: "Mining and Extraction"}, {unemployed: 19}),
-    Object.assign({date: new Date('1964-10-01')}, {industry: "Wholesale and Retail Trade"}, {unemployed: 1023}),
-    Object.assign({date: new Date('1964-10-01')}, {industry: "Manufacturing"}, {unemployed: 694}),
-    Object.assign({date: new Date('1964-10-01')}, {industry: "Leisure and hospitality"}, {unemployed: 779}),
-    Object.assign({date: new Date('1964-10-01')}, {industry: "Business services"}, {unemployed: 587}),
-    Object.assign({date: new Date('1964-10-01')}, {industry: "Construction"}, {unemployed: 812}),
-    Object.assign({date: new Date('1964-10-01')}, {industry: "Education and Health"}, {unemployed: 349}),
-    Object.assign({date: new Date('1964-10-01')}, {industry: "Government"}, {unemployed: 409}),
-    Object.assign({date: new Date('1964-10-01')}, {industry: "Finance"}, {unemployed: 240}),
-    Object.assign({date: new Date('1964-10-01')}, {industry: "Self-employed"}, {unemployed: 262}),
-    Object.assign({date: new Date('1964-10-01')}, {industry: "Other"}, {unemployed: 232}),
-    Object.assign({date: new Date('1964-10-01')}, {industry: "Transportation and Utilities"}, {unemployed: 223}),
-    Object.assign({date: new Date('1964-10-01')}, {industry: "Information"}, {unemployed: 112}),
-    Object.assign({date: new Date('1964-10-01')}, {industry: "Agriculture"}, {unemployed: 173}),
-    Object.assign({date: new Date('1964-10-01')}, {industry: "Mining and Extraction"}, {unemployed: 25}),
+    Object.assign({date: new Date('1962-05-01')}, {industry: "Wholesale and Retail Trade"}, {unemployed: 1023}),
+    Object.assign({date: new Date('1962-05-01')}, {industry: "Manufacturing"}, {unemployed: 694}),
+    Object.assign({date: new Date('1962-05-01')}, {industry: "Leisure and hospitality"}, {unemployed: 779}),
+    Object.assign({date: new Date('1962-05-01')}, {industry: "Business services"}, {unemployed: 587}),
+    Object.assign({date: new Date('1962-05-01')}, {industry: "Construction"}, {unemployed: 812}),
+    Object.assign({date: new Date('1962-05-01')}, {industry: "Education and Health"}, {unemployed: 349}),
+    Object.assign({date: new Date('1962-05-01')}, {industry: "Government"}, {unemployed: 409}),
+    Object.assign({date: new Date('1962-05-01')}, {industry: "Finance"}, {unemployed: 240}),
+    Object.assign({date: new Date('1962-05-01')}, {industry: "Self-employed"}, {unemployed: 262}),
+    Object.assign({date: new Date('1962-05-01')}, {industry: "Other"}, {unemployed: 232}),
+    Object.assign({date: new Date('1962-05-01')}, {industry: "Transportation and Utilities"}, {unemployed: 223}),
+    Object.assign({date: new Date('1962-05-01')}, {industry: "Information"}, {unemployed: 112}),
+    Object.assign({date: new Date('1962-05-01')}, {industry: "Agriculture"}, {unemployed: 173}),
+    Object.assign({date: new Date('1962-05-01')}, {industry: "Mining and Extraction"}, {unemployed: 25}),
     Object.assign({date: new Date('1972-10-01')}, {industry: "Wholesale and Retail Trade"}, {unemployed: 983}),
     Object.assign({date: new Date('1972-10-01')}, {industry: "Manufacturing"}, {unemployed: 739}),
     Object.assign({date: new Date('1972-10-01')}, {industry: "Leisure and hospitality"}, {unemployed: 789}),
@@ -198,9 +209,9 @@ export function stackedLine() {
     Object.assign({date: new Date('1972-10-01')}, {industry: "Other"}, {unemployed: 247}),
     Object.assign({date: new Date('1972-10-01')}, {industry: "Transportation and Utilities"}, {unemployed: 192}),
     Object.assign({date: new Date('1972-10-01')}, {industry: "Information"}, {unemployed: 140}),
+    Object.assign({date: new Date('1972-10-01')}, {industry: "Agriculture"}, {unemployed: 173}),
+    Object.assign({date: new Date('1972-10-01')}, {industry: "Mining and Extraction"}, {unemployed: 25}),
   ]
-
-  // let data = unemployment.filter(d => d.date <= date)
 
   return StackedAreaChart(unemployment, {
     x: d => d.date,
