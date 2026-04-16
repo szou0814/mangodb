@@ -26,9 +26,7 @@ def get_adjacency():
         if line and not line.startswith('#'):
             parts = line.strip().split(',')
             state = parts[0]
-            neighbors =
-    def get_initial_population(state: str):
-        return get_statestats(convert(state))[1]parts[1:] if len(parts) > 1 else []
+            neighbors = parts[1:] if len(parts) > 1 else []
             adj_map[state] = neighbors
     return adj_map
 
