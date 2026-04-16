@@ -20,6 +20,14 @@
         filter: brightness(25%);
       }
 
+      .glow {
+        text-shadow: 0 0 13px #800000;
+      }
+
+      .icon-glow {
+        box-shadow: 0 0 14px rgba(180,0,0,0.6);
+      }
+
       #but1 {
         background-color: rgba(180,0,0,0.6);
         padding: 4px;
@@ -114,19 +122,23 @@
       </div>
 
       <!-- GRAPHS -->
-      <div id="graphs">
+      <div style="padding: 36px 5% 32px;" class="flex gap-5 items-start">
+        <div class="flex-1 bg-black/45 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md">
+          <div id="graphs">
 
-         <div id="map"></div>
+            <div id="map"></div>
 
-         <div id="stackedLine"></div>
+            <div id="stackedLine"></div>
 
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- modal -->
+    <!-- modal
     <div id="modal" class="fixed inset-0 flex items-center justify-center hidden z-50">
       <div class="bg-red-900 border border-white border-2 rounded-xl p-6 w-[500px] text-center shadow-xl">
-        
+
         <p id="modalPrompt" class="text-lg mb-6">
           This is the prompt
         </p>
@@ -144,7 +156,7 @@
         </div>
 
       </div>
-    </div>
+    </div> -->
 
     <!-- modal js -->
     <script>
