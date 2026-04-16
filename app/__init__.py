@@ -66,7 +66,8 @@ def state_stats():
     state_id = request.form.get("state_name")
     stats = db.get_statestats(state_id)
     stringency = db.get_initstringency(state_id)
-    return render_template("start.html", state = state_id, population =  stats[1], population_density = stats[2], vulnerability_index = stats[0], stringency_index = stringency[0], stringency_date = stringency[1])
+    prompt = True #edit this when we have prompts set up
+    return render_template("start.html", state = state_id, population =  stats[1], population_density = stats[2], vulnerability_index = stats[0], stringency_index = stringency[0], stringency_date = stringency[1], prompt = prompt)
 
 @app.route("/game", methods=["GET", "POST"])
 def game():

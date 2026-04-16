@@ -80,3 +80,15 @@ wesleyL -- 2026-4-14 22:05
   - changed to weekly iters
   - improved spreading and infecting functions
 - implemented actual data (removed placeholders)
+
+sarahZ -- 2026-4-15 23:59
+- finished database accessors/functions to calculate initial infection/death rates and new infection/death rates based on stringency, vulnerability, and date from datasets
+- finished html, css, and js for modal popup
+- joyce finished update function for scrubber 
+HOME STRETCH CHECKLIST:
+------------------------------------
+* simulation/game logic :: Sarah
+* finish connecting dataset/actual data to graphs :: Joyce
+* improve/finalize calculations/spread functions for less wait time :: Wesley, Sarah
+* result and profile page & CSS (CHOPPING BLOCK) :: Mottaqi, Joyce
+====================================

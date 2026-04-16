@@ -15,6 +15,7 @@
 
 
 import sqlite3
+import datetime
 import csv
 
 DB_FILE = "database.db"
@@ -26,7 +27,7 @@ def create_tbs():
     c.execute (f"CREATE TABLE IF NOT EXISTS STATES(state_id TEXT PRIMARY KEY, vulnerability_index FLOAT, population INTEGER, population_density FLOAT)")
     c.execute (f"CREATE TABLE IF NOT EXISTS stringency(stringency_id INTEGER PRIMARY KEY AUTOINCREMENT, state_id TEXT, date DATE, stringency_index FLOAT, FOREIGN KEY (state_id) REFERENCES states(state_id))")
     c.execute (f"CREATE TABLE IF NOT EXISTS covid_stats(stats_id INTEGER PRIMARY KEY AUTOINCREMENT, state_id TEXT, date DATE, infected INTEGER, dead INTEGER, FOREIGN KEY (state_id) REFERENCES states(state_id))")
-    c.execute (f"CREATE TABLE IF NOT EXISTS spread_points(point_id INTEGER PRIMARY KEY AUTOINCREMENT, run_id INTEGER, state TEXT date DATE, x FLOAT, y FLOAT, type TEXT, FOREIGN KEY (run_id) REFERENCES runs(run_id))")
+    c.execute (f"CREATE TABLE IF NOT EXISTS spread_points(point_id INTEGER PRIMARY KEY AUTOINCREMENT, run_id INTEGER, state TEXT, date DATE, x FLOAT, y FLOAT, type TEXT, FOREIGN KEY (run_id) REFERENCES runs(run_id))")
     c.execute (f"CREATE TABLE IF NOT EXISTS runs(run_id INTEGER PRIMARY KEY AUTOINCREMENT, state_id TEXT, total_infected INTEGER, total_dead INTEGER, FOREIGN KEY (state_id) REFERENCES states(state_id))")
     db.commit()
     db.close()
@@ -130,6 +131,41 @@ def get_initstringency(state_id):
     db.close()
     return result
 
+def get_initrates(state_id):
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+    c.execute("SELECT date, infected, dead FROM covid_stats WHERE state_id = ? AND (date = '2020-03-01' OR date = '2020-03-08' ORDER BY date ASC", (state_id,))
+    results = c.fetchall()
+    db.close()
+    d1Infected = results[0][1]
+    d7Infected = results[1][1]
+    d7Dead = results[1][2]
+    infectRate = d7Infected/d1Infected
+    deadRate = d7Dead/d7Infected
+    return(infectRate, deadRate)
+
+def get_newrates(stringency, vulnerability, date):
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+    c.execute("SELECT st.state_id, st.stringency_index, s.vulnerability_index FROM stringency st JOIN STATES s ON st.state_id = s.state_id WHERE st.date = ?", (date,))
+    results = c.fetchall()
+    bestMatch = None
+    bestDist = float("inf")
+    for state_id, stateStringency, stateVulnerability in results:
+        dist = ((stateStringency - stringency) ** 2 + (stateVulnerability - vulnerability) ** 2) ** 0.5
+        if dist < bestDist:
+            bestDist = dist
+            bestMatch = state_id
+    prev = (datetime.strptime(date, "%Y-%m-%d") - timedelta(days=7)).strftime("%Y-%m-%d")
+    c.execute("SELECT infected, deaths FROM covid_date WHERE state_id = ? AND date = ?", (bestMatch, date))
+    current = c.fetchone()
+    c.execute("SELECT infected, deaths FROM covid-date WHERE state_id = ? AND date = ?", (bestMatch, prev))
+    previous = c.fetchone()
+    db.close()
+    infectRate = current[0]/previous[0]
+    deadRate = current[1]/previous[1]
+    return (infectRate, deadRate)
+    
 #need to get state bounds/coords from svg
 #modify these as we figure out spread 
 
@@ -139,7 +175,7 @@ def get_points(run_id):
     c.execute("SELECT state, date, x, y, type FROM spread_points WHERE run_id = ? ORDER BY date ASC", (run_id,))
     results = c.fetchall()
     db.close()
-    return result
+    return results
 
 def add_point(run_id, state, date, x, y, type):
     db = sqlite3.connect(DB_FILE)
@@ -192,15 +228,15 @@ def register(username, password):
     db.close()
     return "Registered"
 
-#deletes account
-def delete_acc(username):
-    db = sqlite3.connect(DB_FILE)
-    c = db.cursor()
-    c.execute("DELETE FROM user WHERE user_id = ?", (username,))
-    c.execute("DELETE FROM blog WHERE user_id = ?", (username,))
-    c.execute("DELETE FROM page WHERE user_id = ?", (username,))
-    db.commit()
-    db.close()
+# #deletes account FROM PREVIOUS PROJ, PROBABLY NOT NEEDED
+# def delete_acc(username):
+#     db = sqlite3.connect(DB_FILE)
+#     c = db.cursor()
+#     c.execute("DELETE FROM user WHERE user_id = ?", (username,))
+#     c.execute("DELETE FROM blog WHERE user_id = ?", (username,))
+#     c.execute("DELETE FROM page WHERE user_id = ?", (username,))
+#     db.commit()
+#     db.close()
 ##################################################################################################
 if __name__ == "__main__":
     create_tbs()

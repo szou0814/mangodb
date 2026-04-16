@@ -123,6 +123,52 @@
       </div>
     </div>
 
+    <!-- modal -->
+    <div id="modal" class="fixed inset-0 flex items-center justify-center hidden z-50">
+      <div class="bg-red-900 border border-white border-2 rounded-xl p-6 w-[500px] text-center shadow-xl">
+        
+        <p id="modalPrompt" class="text-lg mb-6">
+          This is the prompt
+        </p>
+
+        <div class="flex flex-col items-center gap-4">
+          <button onclick="handleChoice(1)"
+            class="px-4 py-2 bg-red-800 hover:bg-red-600 rounded-md border border-white border-2 shadow-xl">
+            Choice 1
+          </button>
+
+          <button onclick="handleChoice(2)"
+            class="px-4 py-2 bg-red-800 hover:bg-red-600 rounded-md border border-white border-2 shadow-xl">
+            Choice 2
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- modal js -->
+    <script>
+      let prompt = "This is the prompt"; // replace w/ actual jinja prompt variable later
+
+      function showModal(prompt) {
+        document.getElementById("modalPrompt").innerText = prompt;
+        document.getElementById("modal").classList.remove("hidden");
+      }
+
+      function hideModal() {
+        document.getElementById("modalOverlay").classList.add("hidden");
+      }
+
+      function handleChoice(choice) {
+        console.log("User chose:", choice);
+        hideModal();
+      }
+
+      if (prompt !== null && prompt !== undefined) {
+        showModal(prompt);
+      }
+    </script>
+
     <!-- D3.JS IMPLEMENTATION -->
     <script type="module">
       import { map, data } from "/static/js/map.js";
