@@ -92,3 +92,10 @@ HOME STRETCH CHECKLIST:
 * improve/finalize calculations/spread functions for less wait time :: Wesley, Sarah
 * result and profile page & CSS (CHOPPING BLOCK) :: Mottaqi, Joyce
 ====================================
+
+sarahZ -- 2026-4-16 23:45
+- added function to create points for growth map
+- added projection function to convert point lat long coords to svg coords
+- started writing some prompts and choices... 6 so far
+- calculation discussion: to save on load time, either regression or precomputing and storing in dict, wesley eventually worked on regression
+- joyce worked on getting data to maps and js interactions w/ flask, helped her
