@@ -136,7 +136,7 @@
     </div>
 
     <!-- modal -->
-    <div id="modal" class="fixed inset-0 flex items-center justify-center hidden z-50">
+    <!-- <div id="modal" class="fixed inset-0 flex items-center justify-center hidden z-50">
       <div class="bg-red-900 border border-white border-2 rounded-xl p-6 w-[500px] text-center shadow-xl">
 
         <p id="modalPrompt" class="text-lg mb-6">
@@ -156,10 +156,10 @@
         </div>
 
       </div>
-    </div>
+    </div> -->
 
     <!-- modal js -->
-    <script>
+    <!-- <script>
       let prompt = "This is the prompt"; // replace w/ actual jinja prompt variable later
 
       function showModal(prompt) {
@@ -179,12 +179,23 @@
       if (prompt !== null && prompt !== undefined) {
         showModal(prompt);
       }
-    </script>
+    </script> -->
 
     <!-- D3.JS IMPLEMENTATION -->
     <script type="module">
-      import { map, data } from "/static/js/map.js";
-      import { stackedLine } from "/static/js/stackedLine.js";
+      var currData;
+      var pops = {{ pops }};
+      var state_total_infected = {};
+      var total_infected = 0;
+
+      const STATE_NAMES = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho",
+            "Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri",
+            "Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon",
+            "Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia",
+            "Wisconsin","Wyoming"];
+
+      import { map, mapData } from "/static/js/map.js";
+      import { stackedLine, areaData } from "/static/js/stackedLine.js";
       import { Scrubber } from "/static/js/mbostockScrubber.js";
       import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
@@ -212,31 +223,114 @@
 
       await generateGraphs();
 
-      var dates = [];
-      data.forEach(point => {
-        dates.push(point.date)
-      })
+      function fetchData() {
+        return new Promise((resolve, reject) => {
+          let fetch = new XMLHttpRequest();
 
-      // function updateStackedLine(date) {
-      //   generateStackedLine(date);
-      // }
+          if (currData) {
+            fetch.open('POST', window.location.href, true);
+            fetch.setRequestHeader("data", JSON.stringify(currData));
+            fetch.send();
+          } else {
+            fetch.open('POST', window.location.href, true);
+            fetch.setRequestHeader("data", 'start');
+            fetch.send();
+          };
 
-      const graphScrubber = Scrubber(dates, {delay: 80});
-      document.getElementById('util').append(graphScrubber);
+          fetch.onload = function() {
+            if (this.readyState == 4 && this.status == 200) {
+              currData = JSON.parse(this.response);
+              resolve(currData);
+            } else {
+              reject('promise failed');
+            };
+          };
+        });
+      };
 
-      graphScrubber.addEventListener("input", function() {
-        mapElem.update(graphScrubber.value);
-        stackedLineElem.update(graphScrubber.value);
-        // updateStackedLine(graphScrubber.value);
-      })
+      async function updateGraphs() {
+        const data = await fetchData();
+        if (data !== 'end') {
+          if (areaData.length > 0) {
+            data.forEach(d => {
+              if (d.infected > 0) {
+                if (createDot(d.state, d.infected)) {
+                  let point = mapElem.createPoint(d.state);
+
+                  mapData.push(Object.assign(point,
+                    { date : new Date(d.date) }
+                  ));
+                }
+              }
+
+              areaData.push(Object.assign({ date : new Date(d.date) },
+                { state : d.state },
+                { infected : d.infected }
+              ));
+            });
+          } else {
+            data.forEach(d => {
+              if (d.infected > 0) {
+                createDot(d.state, d.infected);
+                let point = mapElem.createPoint(d.state);
+
+                mapData.push(Object.assign(point,
+                  { date : new Date(d.date) }
+                ));
+              }
+
+              let prevDate = new Date(d.date);
+              prevDate.setDate(prevDate.getDate() - 1);
+
+              areaData.push(Object.assign({ date : prevDate },
+                { state : d.state },
+                { infected : 0 }
+              ));
+              areaData.push(Object.assign({ date : new Date(d.date) },
+                { state : d.state },
+                { infected : d.infected }
+              ));
+            });
+          };
+
+          mapElem.update(new Date(data[0].date));
+          stackedLineElem.update(new Date(data[0].date));
+        };
+      };
+
+      function createDot(state, infected) {
+        if (state in state_total_infected) {
+          let change = infected - state_total_infected[state];
+          state_total_infected[state] = infected;
+
+          return (change / pops[STATE_NAMES.indexOf(state)] >= 0.005)
+        } else {
+          state_total_infected[state] = infected;
+
+          return (infected / pops[STATE_NAMES.indexOf(state)] >= 0.005)
+        }
+      }
+
+      // var dates = [];
+      // data.forEach(point => {
+      //   dates.push(point.date)
+      // })
+      //
+      // const graphScrubber = Scrubber(dates, {delay: 80});
+      // document.getElementById('util').append(graphScrubber);
+      //
+      // graphScrubber.addEventListener("input", function() {
+      //   mapElem.update(graphScrubber.value);
+      //   stackedLineElem.update(graphScrubber.value);
+      // })
     </script>
 
     <!-- GLOBAL SCOPE FUNCTIONS (because it wouldn't let me import outside a module) -->
-    <script>
+    <!-- <script>
       function updateGraph() {
         mapElem.update(new Date("1965-08-01"));
       }
-    </script>
+    </script> -->
 
   </body>
 

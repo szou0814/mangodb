@@ -14,7 +14,7 @@ function StackedAreaChart(data, {
   xDomain, // [xmin, xmax]
   xRange = [marginLeft, width - marginRight], // [left, right]
   yType = d3.scaleLinear, // type of y-scale
-  yDomain, // [ymin, ymax]
+  yDomain = [0, 700000], // [ymin, ymax]
   yRange = [height - marginBottom, marginTop], // [bottom, top]
   zDomain, // array of z-values
   offset = d3.stackOffsetDiverging, // stack offset method
@@ -167,56 +167,58 @@ function StackedAreaChart(data, {
   });
 }
 
-export function stackedLine() {
-  let unemployment = [
-    Object.assign({date: new Date('1962-04-01')}, {industry: "Wholesale and Retail Trade"}, {unemployed: 1000}),
-    Object.assign({date: new Date('1962-04-01')}, {industry: "Manufacturing"}, {unemployed: 734}),
-    Object.assign({date: new Date('1962-04-01')}, {industry: "Leisure and hospitality"}, {unemployed: 782}),
-    Object.assign({date: new Date('1962-04-01')}, {industry: "Business services"}, {unemployed: 655}),
-    Object.assign({date: new Date('1962-04-01')}, {industry: "Construction"}, {unemployed: 745}),
-    Object.assign({date: new Date('1962-04-01')}, {industry: "Education and Health"}, {unemployed: 353}),
-    Object.assign({date: new Date('1962-04-01')}, {industry: "Government"}, {unemployed: 430}),
-    Object.assign({date: new Date('1962-04-01')}, {industry: "Finance"}, {unemployed: 228}),
-    Object.assign({date: new Date('1962-04-01')}, {industry: "Self-employed"}, {unemployed: 239}),
-    Object.assign({date: new Date('1962-04-01')}, {industry: "Other"}, {unemployed: 274}),
-    Object.assign({date: new Date('1962-04-01')}, {industry: "Transportation and Utilities"}, {unemployed: 236}),
-    Object.assign({date: new Date('1962-04-01')}, {industry: "Information"}, {unemployed: 125}),
-    Object.assign({date: new Date('1962-04-01')}, {industry: "Agriculture"}, {unemployed: 154}),
-    Object.assign({date: new Date('1962-04-01')}, {industry: "Mining and Extraction"}, {unemployed: 19}),
-    Object.assign({date: new Date('1962-05-01')}, {industry: "Wholesale and Retail Trade"}, {unemployed: 1023}),
-    Object.assign({date: new Date('1962-05-01')}, {industry: "Manufacturing"}, {unemployed: 694}),
-    Object.assign({date: new Date('1962-05-01')}, {industry: "Leisure and hospitality"}, {unemployed: 779}),
-    Object.assign({date: new Date('1962-05-01')}, {industry: "Business services"}, {unemployed: 587}),
-    Object.assign({date: new Date('1962-05-01')}, {industry: "Construction"}, {unemployed: 812}),
-    Object.assign({date: new Date('1962-05-01')}, {industry: "Education and Health"}, {unemployed: 349}),
-    Object.assign({date: new Date('1962-05-01')}, {industry: "Government"}, {unemployed: 409}),
-    Object.assign({date: new Date('1962-05-01')}, {industry: "Finance"}, {unemployed: 240}),
-    Object.assign({date: new Date('1962-05-01')}, {industry: "Self-employed"}, {unemployed: 262}),
-    Object.assign({date: new Date('1962-05-01')}, {industry: "Other"}, {unemployed: 232}),
-    Object.assign({date: new Date('1962-05-01')}, {industry: "Transportation and Utilities"}, {unemployed: 223}),
-    Object.assign({date: new Date('1962-05-01')}, {industry: "Information"}, {unemployed: 112}),
-    Object.assign({date: new Date('1962-05-01')}, {industry: "Agriculture"}, {unemployed: 173}),
-    Object.assign({date: new Date('1962-05-01')}, {industry: "Mining and Extraction"}, {unemployed: 25}),
-    Object.assign({date: new Date('1972-10-01')}, {industry: "Wholesale and Retail Trade"}, {unemployed: 983}),
-    Object.assign({date: new Date('1972-10-01')}, {industry: "Manufacturing"}, {unemployed: 739}),
-    Object.assign({date: new Date('1972-10-01')}, {industry: "Leisure and hospitality"}, {unemployed: 789}),
-    Object.assign({date: new Date('1972-10-01')}, {industry: "Business services"}, {unemployed: 623}),
-    Object.assign({date: new Date('1972-10-01')}, {industry: "Construction"}, {unemployed: 669}),
-    Object.assign({date: new Date('1972-10-01')}, {industry: "Education and Health"}, {unemployed: 381}),
-    Object.assign({date: new Date('1972-10-01')}, {industry: "Government"}, {unemployed: 311}),
-    Object.assign({date: new Date('1972-10-01')}, {industry: "Finance"}, {unemployed: 226}),
-    Object.assign({date: new Date('1972-10-01')}, {industry: "Self-employed"}, {unemployed: 213}),
-    Object.assign({date: new Date('1972-10-01')}, {industry: "Other"}, {unemployed: 247}),
-    Object.assign({date: new Date('1972-10-01')}, {industry: "Transportation and Utilities"}, {unemployed: 192}),
-    Object.assign({date: new Date('1972-10-01')}, {industry: "Information"}, {unemployed: 140}),
-    Object.assign({date: new Date('1972-10-01')}, {industry: "Agriculture"}, {unemployed: 173}),
-    Object.assign({date: new Date('1972-10-01')}, {industry: "Mining and Extraction"}, {unemployed: 25}),
-  ]
+export var areaData = []
 
-  return StackedAreaChart(unemployment, {
+export function stackedLine() {
+  // let data = [
+  //   Object.assign({date: new Date('1962-04-01')}, {industry: "Wholesale and Retail Trade"}, {unemployed: 1000}),
+  //   Object.assign({date: new Date('1962-04-01')}, {industry: "Manufacturing"}, {unemployed: 734}),
+  //   Object.assign({date: new Date('1962-04-01')}, {industry: "Leisure and hospitality"}, {unemployed: 782}),
+  //   Object.assign({date: new Date('1962-04-01')}, {industry: "Business services"}, {unemployed: 655}),
+  //   Object.assign({date: new Date('1962-04-01')}, {industry: "Construction"}, {unemployed: 745}),
+  //   Object.assign({date: new Date('1962-04-01')}, {industry: "Education and Health"}, {unemployed: 353}),
+  //   Object.assign({date: new Date('1962-04-01')}, {industry: "Government"}, {unemployed: 430}),
+  //   Object.assign({date: new Date('1962-04-01')}, {industry: "Finance"}, {unemployed: 228}),
+  //   Object.assign({date: new Date('1962-04-01')}, {industry: "Self-employed"}, {unemployed: 239}),
+  //   Object.assign({date: new Date('1962-04-01')}, {industry: "Other"}, {unemployed: 274}),
+  //   Object.assign({date: new Date('1962-04-01')}, {industry: "Transportation and Utilities"}, {unemployed: 236}),
+  //   Object.assign({date: new Date('1962-04-01')}, {industry: "Information"}, {unemployed: 125}),
+  //   Object.assign({date: new Date('1962-04-01')}, {industry: "Agriculture"}, {unemployed: 154}),
+  //   Object.assign({date: new Date('1962-04-01')}, {industry: "Mining and Extraction"}, {unemployed: 19}),
+  //   Object.assign({date: new Date('1962-05-01')}, {industry: "Wholesale and Retail Trade"}, {unemployed: 1023}),
+  //   Object.assign({date: new Date('1962-05-01')}, {industry: "Manufacturing"}, {unemployed: 694}),
+  //   Object.assign({date: new Date('1962-05-01')}, {industry: "Leisure and hospitality"}, {unemployed: 779}),
+  //   Object.assign({date: new Date('1962-05-01')}, {industry: "Business services"}, {unemployed: 587}),
+  //   Object.assign({date: new Date('1962-05-01')}, {industry: "Construction"}, {unemployed: 812}),
+  //   Object.assign({date: new Date('1962-05-01')}, {industry: "Education and Health"}, {unemployed: 349}),
+  //   Object.assign({date: new Date('1962-05-01')}, {industry: "Government"}, {unemployed: 409}),
+  //   Object.assign({date: new Date('1962-05-01')}, {industry: "Finance"}, {unemployed: 240}),
+  //   Object.assign({date: new Date('1962-05-01')}, {industry: "Self-employed"}, {unemployed: 262}),
+  //   Object.assign({date: new Date('1962-05-01')}, {industry: "Other"}, {unemployed: 232}),
+  //   Object.assign({date: new Date('1962-05-01')}, {industry: "Transportation and Utilities"}, {unemployed: 223}),
+  //   Object.assign({date: new Date('1962-05-01')}, {industry: "Information"}, {unemployed: 112}),
+  //   Object.assign({date: new Date('1962-05-01')}, {industry: "Agriculture"}, {unemployed: 173}),
+  //   Object.assign({date: new Date('1962-05-01')}, {industry: "Mining and Extraction"}, {unemployed: 25}),
+  //   Object.assign({date: new Date('1972-10-01')}, {industry: "Wholesale and Retail Trade"}, {unemployed: 983}),
+  //   Object.assign({date: new Date('1972-10-01')}, {industry: "Manufacturing"}, {unemployed: 739}),
+  //   Object.assign({date: new Date('1972-10-01')}, {industry: "Leisure and hospitality"}, {unemployed: 789}),
+  //   Object.assign({date: new Date('1972-10-01')}, {industry: "Business services"}, {unemployed: 623}),
+  //   Object.assign({date: new Date('1972-10-01')}, {industry: "Construction"}, {unemployed: 669}),
+  //   Object.assign({date: new Date('1972-10-01')}, {industry: "Education and Health"}, {unemployed: 381}),
+  //   Object.assign({date: new Date('1972-10-01')}, {industry: "Government"}, {unemployed: 311}),
+  //   Object.assign({date: new Date('1972-10-01')}, {industry: "Finance"}, {unemployed: 226}),
+  //   Object.assign({date: new Date('1972-10-01')}, {industry: "Self-employed"}, {unemployed: 213}),
+  //   Object.assign({date: new Date('1972-10-01')}, {industry: "Other"}, {unemployed: 247}),
+  //   Object.assign({date: new Date('1972-10-01')}, {industry: "Transportation and Utilities"}, {unemployed: 192}),
+  //   Object.assign({date: new Date('1972-10-01')}, {industry: "Information"}, {unemployed: 140}),
+  //   Object.assign({date: new Date('1972-10-01')}, {industry: "Agriculture"}, {unemployed: 173}),
+  //   Object.assign({date: new Date('1972-10-01')}, {industry: "Mining and Extraction"}, {unemployed: 25}),
+  // ]
+
+  return StackedAreaChart(areaData, {
     x: d => d.date,
-    y: d => d.unemployed,
-    z: d => d.industry,
+    y: d => d.infected,
+    z: d => d.state,
     height: 500
   })
 }

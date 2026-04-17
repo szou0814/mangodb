@@ -1,5 +1,6 @@
 import sqlite3
 from flask import Flask, render_template, request, session, redirect, url_for, flash, jsonify
+from json import loads
 import os
 import datetime
 import sys
@@ -11,6 +12,7 @@ import logic as logic
 app = Flask(__name__)
 app.secret_key = 'hi'
 DB_FILE="database.db"
+cache = {}
 
 @app.route("/", methods=["GET", "POST"])
 def login():
@@ -85,25 +87,48 @@ def game():
     if "user_id" not in session:
         return redirect(url_for("login"))
     if request.method == "POST":
-        session["state_name"] = STATES[STATE_NAMES.index(request.form.get("state_name"))]
-        state_name = session["state_name"];
+        reqs = request.headers
 
-    map = logic.get_adjacency();
-    df = logic.run_simulation(state_name, map);
+        if 'data' in reqs and 'data' in cache:
+            data = cache['data']
 
-    data = []
-    for row in df.itertuples():
-        state = row.Index
-        dates = zip(df.columns[::2], row[1::2])
+            if reqs['data'] != 'start':
+                prevData = loads(reqs['data'])
 
-        for (date, infected) in dates:
-            data.append({
-                'state' : state,
-                'date' : date[:10],
-                'infected' : infected,
-            })
-            
-    return render_template("game.html", state_name=session.get("state_name", ""))
+                i = data.index(prevData[0])
+                i += len(STATES)
+                if i > len(data):
+                    return 'end'
+            else:
+                i = 0
+
+            return jsonify(data[i:len(STATES)+i])
+
+        if 'state_name' not in session:
+            session["state_name"] = STATES[STATE_NAMES.index(request.form.get("state_name"))]
+
+    if 'data' not in cache:
+        map = logic.get_adjacency();
+        df = logic.run_simulation(session['state_name'], map);
+
+        data = []
+        for row in df.itertuples():
+            state = row.Index
+            dates = zip(df.columns[::2], row[1::2])
+
+            for (date, infected) in dates:
+                data.append({
+                    'state' : STATE_NAMES[STATES.index(state)],
+                    'date' : date[:10],
+                    'infected' : infected,
+                })
+        cache['data'] = data
+
+    populations = []
+    for state in STATE_NAMES:
+        populations.append(db.get_statestats(state)[1])
+
+    return render_template("game.html", state_name=session.get("state_name", ""), pops=populations)
 
 if __name__ == "__main__":
     app.debug = True
