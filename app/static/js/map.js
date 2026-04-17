@@ -3,8 +3,35 @@ import * as topojson from "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm";
 
 export async function map() {
   const us = await d3.json("https://cdn.jsdelivr.net/npm/us-atlas@1/us/10m.json");
+  const stateFeatures = topojson.feature(us, us.objects.states).features;
+  let points = [];
+  let prevPoints = null;
 
-  us.objects.lower48 = { // pulls the geometries of each state for later use
+  //i took this from walmart growth code except changed it to fitsize so it automatically scales and centers svg map
+  //dis is called a projection or smth 
+  //it converts our lat long into pixel coordinates on the svg
+  //MUST HAVE THIS SO DO NOT CHANGE (unless u find bug ofc hehe)
+  const projection = d3.geoAlbersUsa().fitSize([960, 600], topojson.feature(us, us.objects.states));
+
+  function createPoint(state_id) {
+    const feature = stateFeatures.find(d => d.properties.name === state_id);
+    let point;
+
+    while (true) {
+      //d3.geoBounds gives like a box surrounding the state
+      const bounds = d3.geoBounds(feature);
+      const x = bounds[0][0] + Math.random() * (bounds[1][0] - bounds[0][0]);
+      const y = bounds[0][1] + Math.random() * (bounds[1][1] - bounds[0][1]);
+      point = [x,y];
+      //so dis is to check if its actually in the state
+      if (d3.geoContains(feature, point)) {
+        break;
+      }
+    }
+    return point;
+  }
+
+  us.objects.states = { // pulls the geometries of each state for later use
     type: "GeometryCollection",
     geometries: us.objects.states.geometries
   };
