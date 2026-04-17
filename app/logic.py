@@ -95,7 +95,7 @@ def run_simulation(start_state: str, adj_map):
                     # spread like 1000 people * chance
                     spread_amount += round(chance * 2000)
 
-        return spread_amountadj_map = get_adjacency()
+        return spread_amount
 
     def get_death_rate(state: str):
         # update this later with whaetver
