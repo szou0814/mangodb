@@ -2,141 +2,139 @@
 
 <html>
 
-  <head>
+<head>
 
-    <title>Simulator</title>
-    <!-- TAILWIND -->
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <title>mangodb Pandemic Simulator</title>
+  <title>Simulator</title>
+  <!-- TAILWIND -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <title>mangodb Pandemic Simulator</title>
 
-    <!-- CUSTOM CSS -->
-    <style>
-      .bg {
-        background-image: url("/static/images/bg.jpg");
-        background-size: cover;
-        background-position: center;
-        filter: brightness(25%);
-      }
+  <!-- CUSTOM CSS -->
+  <style>
+    .bg {
+      background-image: url("/static/images/bg.jpg");
+      background-size: cover;
+      background-position: center;
+      filter: brightness(25%);
+    }
 
-      .glow {
-        text-shadow: 0 0 13px #800000;
-      }
+    .glow {
+      text-shadow: 0 0 13px #800000;
+    }
 
-      .icon-glow {
-        box-shadow: 0 0 14px rgba(180,0,0,0.6);
-      }
+    .icon-glow {
+      box-shadow: 0 0 14px rgba(180, 0, 0, 0.6);
+    }
 
-      #but1 {
-        background-color: rgba(180,0,0,0.6);
-        padding: 4px;
-        border-width: 1px;
-        margin-left: 20px;
-        font-size: 150%;
-      }
+    #but1 {
+      background-color: rgba(180, 0, 0, 0.6);
+      padding: 4px;
+      border-width: 1px;
+      margin-left: 20px;
+      font-size: 150%;
+    }
 
-      input[type="range"]::-webkit-slider-thumb {
-        background: white;
-      }
+    input[type="range"]::-webkit-slider-thumb {
+      background: white;
+    }
 
-      #mainCont {
-        height: 100%;
-        width: 100%;
+    #mainCont {
+      height: 100%;
+      width: 100%;
 
-        display: flex;
-        flex-direction: column;
-      }
+      display: flex;
+      flex-direction: column;
+    }
 
-      #graphs {
-        width: 100%;
+    #graphs {
+      width: 100%;
 
-        display: flex;
-        flex-flow: row wrap;
-        gap: 1%;
+      display: flex;
+      flex-flow: row wrap;
+      gap: 1%;
 
-        align-items: center;
-        justify-content: center;
-        padding: 2% 1% 0 1%;
+      align-items: center;
+      justify-content: center;
+      padding: 2% 1% 0 1%;
 
-      }
+    }
 
-      #map {
-        width: clamp(700px, 50%, 50%);
-        padding: 2% 0 2% 0;
+    #map {
+      width: clamp(700px, 50%, 50%);
+      padding: 2% 0 2% 0;
 
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-      #stackedLine {
-        width: clamp(700px, 43%, 43%);
-        padding: 2% 0 2% 0;
+    #stackedLine {
+      width: clamp(700px, 43%, 43%);
+      padding: 2% 0 2% 0;
 
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
 
-    </style>
+</head>
 
-  </head>
+<body class="min-h-screen text-gray-200" style="font-family: 'Segoe UI', system-ui, sans-serif;">
+  <!-- background -->
+  <div class="bg fixed inset-0 -z-10"></div>
 
-  <body class="min-h-screen text-gray-200" style="font-family: 'Segoe UI', system-ui, sans-serif;">
-    <!-- background -->
-    <div class="bg fixed inset-0 -z-10"></div>
-
-    <!-- nav -->
-    <nav class="flex items-center justify-between px-8 py-3.5 bg-black/55 backdrop-blur-md border-b border-white/[0.07]">
-      <div class="flex items-center gap-3">
-        <img src="/static/images/icon.png" alt="icon" class="h-9 w-auto rounded-lg icon-glow">
-        <span class="text-lg font-bold tracking-wide text-white glow">mangodb Pandemic Simulator</span>
-      </div>
-      <form action="/logout" method="POST">
-        <button type="submit"
-          class="bg-white/[0.06] border border-white/20 text-gray-400 hover:bg-white/[0.14] hover:text-white
+  <!-- nav -->
+  <nav class="flex items-center justify-between px-8 py-3.5 bg-black/55 backdrop-blur-md border-b border-white/[0.07]">
+    <div class="flex items-center gap-3">
+      <img src="/static/images/icon.png" alt="icon" class="h-9 w-auto rounded-lg icon-glow">
+      <span class="text-lg font-bold tracking-wide text-white glow">mangodb Pandemic Simulator</span>
+    </div>
+    <form action="/logout" method="POST">
+      <button type="submit" class="bg-white/[0.06] border border-white/20 text-gray-400 hover:bg-white/[0.14] hover:text-white
                  px-5 py-1.5 rounded-md text-sm tracking-wider transition-colors cursor-pointer">
-          Sign Out
-        </button>
-      </form>
-    </nav>
+        Sign Out
+      </button>
+    </form>
+  </nav>
 
-    <div class="flex justify-between items-center px-4 py-2 border-b bg-red-900 mb-4">
-      <div class="flex gap-6 text-sm">
-        <span>State: <strong></strong></span>
-        <span>Total Infected: <strong></strong></span>
-        <span>Total Dead: <strong></strong></span>
-        <span>Stringency Index: <strong></strong></span>
-        <span>Social Vulnerability Index: <strong></strong></span>
-      </div>
-      <div class="text-sm">
-        Date: <strong></strong>
-      </div>
+  <div class="flex justify-between items-center px-4 py-2 border-b bg-red-900 mb-4">
+    <div class="flex gap-6 text-sm">
+      <span>State: <strong></strong></span>
+      <span>Total Infected: <strong></strong></span>
+      <span>Total Dead: <strong></strong></span>
+      <span>Stringency Index: <strong></strong></span>
+      <span>Social Vulnerability Index: <strong></strong></span>
+    </div>
+    <div class="text-sm">
+      Date: <strong></strong>
+    </div>
+  </div>
+
+  <div id="mainCont">
+    <!-- UTIL -->
+    <div id="util">
+      <button id="but1" onclick="updateGraph()">Test Update Graph</button>
     </div>
 
-    <div id="mainCont">
-      <!-- UTIL -->
-      <div id="util">
-        <button id="but1" onclick="updateGraph()">Test Update Graph</button>
-      </div>
+    <!-- GRAPHS -->
+    <div style="padding: 36px 5% 32px;" class="flex gap-5 items-start">
+      <div class="flex-1 bg-black/45 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md">
+        <div id="graphs">
 
-      <!-- GRAPHS -->
-      <div style="padding: 36px 5% 32px;" class="flex gap-5 items-start">
-        <div class="flex-1 bg-black/45 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md">
-          <div id="graphs">
+          <div id="map"></div>
 
-            <div id="map"></div>
+          <div id="stackedLine"></div>
 
-            <div id="stackedLine"></div>
-
-          </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- modal -->
-    <!-- <div id="modal" class="fixed inset-0 flex items-center justify-center hidden z-50">
+  <!-- modal -->
+  <!-- <div id="modal" class="fixed inset-0 flex items-center justify-center hidden z-50">
       <div class="bg-red-900 border border-white border-2 rounded-xl p-6 w-[500px] text-center shadow-xl">
 
         <p id="modalPrompt" class="text-lg mb-6">
@@ -158,8 +156,8 @@
       </div>
     </div> -->
 
-    <!-- modal js -->
-    <!-- <script>
+  <!-- modal js -->
+  <!-- <script>
       let prompt = "This is the prompt"; // replace w/ actual jinja prompt variable later
 
       function showModal(prompt) {
@@ -181,157 +179,157 @@
       }
     </script> -->
 
-    <!-- D3.JS IMPLEMENTATION -->
-    <script type="module">
-      var currData;
-      var pops = {{ pops }};
-      var state_total_infected = {};
-      var total_infected = 0;
+  <!-- D3.JS IMPLEMENTATION -->
+  <script type="module">
+    var currData;
+    var pops = {{ pops }};
+    var state_total_infected = {};
+    var total_infected = 0;
 
-      const STATE_NAMES = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho",
-            "Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri",
-            "Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon",
-            "Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia",
-            "Wisconsin","Wyoming"];
+    const STATE_NAMES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
+      "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri",
+      "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
+      "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
+      "Wisconsin", "Wyoming"];
 
-      import { map, mapData } from "/static/js/map.js";
-      import { stackedLine, areaData } from "/static/js/stackedLine.js";
-      import { Scrubber } from "/static/js/mbostockScrubber.js";
-      import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+    import { map, mapData } from "/static/js/map.js";
+    import { stackedLine, areaData } from "/static/js/stackedLine.js";
+    import { Scrubber } from "/static/js/mbostockScrubber.js";
+    import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 
-      document.getElementById('map').innerHTML = "<br>waiting for graph.....";
-      document.getElementById('stackedLine').innerHTML = "<br>waiting for graph.....";
+    document.getElementById('map').innerHTML = "<br>waiting for graph.....";
+    document.getElementById('stackedLine').innerHTML = "<br>waiting for graph.....";
 
-      async function generateMap() {
-        window.mapElem = await map(); // everything below await will not run until this promise is complete
+    async function generateMap() {
+      window.mapElem = await map(); // everything below await will not run until this promise is complete
 
-        document.getElementById('map').innerHTML = "";
-        document.getElementById('map').append(mapElem);
-      }
+      document.getElementById('map').innerHTML = "";
+      document.getElementById('map').append(mapElem);
+    }
 
-        async function generateStackedLine() {
-        window.stackedLineElem = await stackedLine();
+    async function generateStackedLine() {
+      window.stackedLineElem = await stackedLine();
 
-        document.getElementById('stackedLine').innerHTML = "";
-        document.getElementById('stackedLine').append(stackedLineElem);
-      }
+      document.getElementById('stackedLine').innerHTML = "";
+      document.getElementById('stackedLine').append(stackedLineElem);
+    }
 
-      async function generateGraphs() {
-        generateMap();
-        generateStackedLine();
-      }
+    async function generateGraphs() {
+      generateMap();
+      generateStackedLine();
+    }
 
-      await generateGraphs();
+    await generateGraphs();
 
-      function fetchData() {
-        return new Promise((resolve, reject) => {
-          let fetch = new XMLHttpRequest();
+    function fetchData() {
+      return new Promise((resolve, reject) => {
+        let fetch = new XMLHttpRequest();
 
-          if (currData) {
-            fetch.open('POST', window.location.href, true);
-            fetch.setRequestHeader("data", JSON.stringify(currData));
-            fetch.send();
+        if (currData) {
+          fetch.open('POST', window.location.href, true);
+          fetch.setRequestHeader("data", JSON.stringify(currData));
+          fetch.send();
+        } else {
+          fetch.open('POST', window.location.href, true);
+          fetch.setRequestHeader("data", 'start');
+          fetch.send();
+        };
+
+        fetch.onload = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            currData = JSON.parse(this.response);
+            resolve(currData);
           } else {
-            fetch.open('POST', window.location.href, true);
-            fetch.setRequestHeader("data", 'start');
-            fetch.send();
+            reject('promise failed');
           };
+        };
+      });
+    };
 
-          fetch.onload = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              currData = JSON.parse(this.response);
-              resolve(currData);
-            } else {
-              reject('promise failed');
-            };
-          };
-        });
-      };
-
-      async function updateGraphs() {
-        const data = await fetchData();
-        if (data !== 'end') {
-          if (areaData.length > 0) {
-            data.forEach(d => {
-              if (d.infected > 0) {
-                if (createDot(d.state, d.infected)) {
-                  let point = mapElem.createPoint(d.state);
-
-                  mapData.push(Object.assign(point,
-                    { date : new Date(d.date) }
-                  ));
-                }
-              }
-
-              areaData.push(Object.assign({ date : new Date(d.date) },
-                { state : d.state },
-                { infected : d.infected }
-              ));
-            });
-          } else {
-            data.forEach(d => {
-              if (d.infected > 0) {
-                createDot(d.state, d.infected);
+    async function updateGraphs() {
+      const data = await fetchData();
+      if (data !== 'end') {
+        if (areaData.length > 0) {
+          data.forEach(d => {
+            if (d.infected > 0) {
+              if (createDot(d.state, d.infected)) {
                 let point = mapElem.createPoint(d.state);
 
                 mapData.push(Object.assign(point,
-                  { date : new Date(d.date) }
+                  { date: new Date(d.date) }
                 ));
               }
+            }
 
-              let prevDate = new Date(d.date);
-              prevDate.setDate(prevDate.getDate() - 1);
-
-              areaData.push(Object.assign({ date : prevDate },
-                { state : d.state },
-                { infected : 0 }
-              ));
-              areaData.push(Object.assign({ date : new Date(d.date) },
-                { state : d.state },
-                { infected : d.infected }
-              ));
-            });
-          };
-
-          mapElem.update(new Date(data[0].date));
-          stackedLineElem.update(new Date(data[0].date));
-        };
-      };
-
-      function createDot(state, infected) {
-        if (state in state_total_infected) {
-          let change = infected - state_total_infected[state];
-          state_total_infected[state] = infected;
-
-          return (change / pops[STATE_NAMES.indexOf(state)] >= 0.005)
+            areaData.push(Object.assign({ date: new Date(d.date) },
+              { state: d.state },
+              { infected: d.infected }
+            ));
+          });
         } else {
-          state_total_infected[state] = infected;
+          data.forEach(d => {
+            if (d.infected > 0) {
+              createDot(d.state, d.infected);
+              let point = mapElem.createPoint(d.state);
 
-          return (infected / pops[STATE_NAMES.indexOf(state)] >= 0.005)
-        }
+              mapData.push(Object.assign(point,
+                { date: new Date(d.date) }
+              ));
+            }
+
+            let prevDate = new Date(d.date);
+            prevDate.setDate(prevDate.getDate() - 1);
+
+            areaData.push(Object.assign({ date: prevDate },
+              { state: d.state },
+              { infected: 0 }
+            ));
+            areaData.push(Object.assign({ date: new Date(d.date) },
+              { state: d.state },
+              { infected: d.infected }
+            ));
+          });
+        };
+
+        mapElem.update(new Date(data[0].date));
+        stackedLineElem.update(new Date(data[0].date));
+      };
+    };
+
+    function createDot(state, infected) {
+      if (state in state_total_infected) {
+        let change = infected - state_total_infected[state];
+        state_total_infected[state] = infected;
+
+        return (change / pops[STATE_NAMES.indexOf(state)] >= 0.005)
+      } else {
+        state_total_infected[state] = infected;
+
+        return (infected / pops[STATE_NAMES.indexOf(state)] >= 0.005)
       }
+    }
 
-      // var dates = [];
-      // data.forEach(point => {
-      //   dates.push(point.date)
-      // })
-      //
-      // const graphScrubber = Scrubber(dates, {delay: 80});
-      // document.getElementById('util').append(graphScrubber);
-      //
-      // graphScrubber.addEventListener("input", function() {
-      //   mapElem.update(graphScrubber.value);
-      //   stackedLineElem.update(graphScrubber.value);
-      // })
-    </script>
+    // var dates = [];
+    // data.forEach(point => {
+    //   dates.push(point.date)
+    // })
+    //
+    // const graphScrubber = Scrubber(dates, {delay: 80});
+    // document.getElementById('util').append(graphScrubber);
+    //
+    // graphScrubber.addEventListener("input", function() {
+    //   mapElem.update(graphScrubber.value);
+    //   stackedLineElem.update(graphScrubber.value);
+    // })
+  </script>
 
-    <!-- GLOBAL SCOPE FUNCTIONS (because it wouldn't let me import outside a module) -->
-    <!-- <script>
+  <!-- GLOBAL SCOPE FUNCTIONS (because it wouldn't let me import outside a module) -->
+  <!-- <script>
       function updateGraph() {
         mapElem.update(new Date("1965-08-01"));
       }
     </script> -->
 
-  </body>
+</body>
 
 </html>

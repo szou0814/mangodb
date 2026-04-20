@@ -108,20 +108,32 @@ def game():
             session["state_name"] = STATES[STATE_NAMES.index(request.form.get("state_name"))]
 
     if 'data' not in cache:
-        map = logic.get_adjacency();
-        df = logic.run_simulation(session['state_name'], map);
-
+        map_adj = logic.get_adjacency()
+        sim = logic.Simulation(session['state_name'], map_adj)
+        
+        # Tick the simulation
+        print("tickin")
+        for _ in range(152):
+            df = sim.tick()
+            if sim.pending_prompts:
+                for prompt in sim.pending_prompts:
+                    print(f"Prompt: {prompt['prompt']['question']}")
+                sim.pending_prompts.clear()
+        print("done tickin")
         data = []
-        for row in df.itertuples():
-            state = row.Index
-            dates = zip(df.columns[::2], row[1::2])
-
-            for (date, infected) in dates:
+        infected_cols = [c for c in df.columns if str(c).endswith("_infected")]
+        print("data thing")
+        for state in STATES:
+            state_name = STATE_NAMES[STATES.index(state)]
+            for col in infected_cols:
+                date_str = str(col)[:10]
+                infected = df.loc[state, col]
                 data.append({
-                    'state' : STATE_NAMES[STATES.index(state)],
-                    'date' : date[:10],
-                    'infected' : infected,
+                    'state': state_name,
+                    'date': date_str,
+                    'infected': float(infected),
                 })
+        print("done data thing")
         cache['data'] = data
 
     populations = []
