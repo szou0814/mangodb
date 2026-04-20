@@ -260,6 +260,5 @@ if __name__ == "__main__":
 
     sim = Simulation("NY", adj_map, covid_models=models)
     for _ in range(152):
-        final_df, next_cols = sim.tick()
-
-    print(final_df.iloc[:, -6:])
+        final_df = sim.tick()
+        print(final_df.iloc[:, -3:].tail())
