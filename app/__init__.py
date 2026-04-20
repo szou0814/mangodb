@@ -101,11 +101,13 @@ def game():
                 if i > len(data):
                     return 'end'
             else:
+                print('i got here!')
                 i = 0
 
+            print(data[i:len(STATES)+i])
             return jsonify(data[i:len(STATES)+i])
 
-        if 'state_name' not in session:
+        if 'state_name' not in session or session["state_name"] != request.form.get("state_name"):
             session["state_name"] = STATES[STATE_NAMES.index(request.form.get("state_name"))]
 
     if cache.get('data') is None:
@@ -124,9 +126,9 @@ def game():
         data = []
         infected_cols = [c for c in df.columns if str(c).endswith("_infected")]
         print("data thing")
-        for state in STATES:
-            state_name = STATE_NAMES[STATES.index(state)]
-            for col in infected_cols:
+        for col in infected_cols:
+            for state in STATES:
+                state_name = STATE_NAMES[STATES.index(state)]
                 date_str = str(col)[:10]
                 infected = df.loc[state, col]
                 data.append({
@@ -136,7 +138,6 @@ def game():
                 })
         print("done data thing")
         cache['data'] = data
-        processed = True
 
     populations = []
     for state in STATE_NAMES:

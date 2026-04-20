@@ -182,9 +182,10 @@
   <!-- D3.JS IMPLEMENTATION -->
   <script type="module">
     var currData;
-    var pops = {{ pops }};
+    var pops = {{ pops | tojson }};
     var state_total_infected = {};
     var total_infected = 0;
+    var isInitial = true;
 
     const STATE_NAMES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
       "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri",
@@ -236,10 +237,11 @@
     }
 
     async function updateGraphs() {
+      console.log('i worked');
       const data = await fetchData();
       console.log(data);
       if (data !== 'end') {
-        if (areaData.length > 0) {
+        if (!isInitial) {
           data.forEach(d => {
             if (d.infected > 0) {
               if (createDot(d.state, d.infected)) {
@@ -279,6 +281,7 @@
               { infected: d.infected }
             ));
           });
+          isInitial = false;
         };
 
         mapElem.update(new Date(data[0].date));
@@ -287,6 +290,12 @@
     };
 
     function createDot(state, infected) {
+      const idx = STATE_NAMES.indexOf(state);
+      const pop = pops[idx];
+
+      console.log({ state, idx, pop, infected });
+
+      if (!pop) return false;
       if (state in state_total_infected) {
         let change = infected - state_total_infected[state];
         state_total_infected[state] = infected;
@@ -301,6 +310,10 @@
 
     document.getElementById('but1').addEventListener("click", () => {
       updateGraphs();
+      let updates = setInterval(() => {
+        console.log('ran');
+        updateGraphs()
+      }, 1000);
     })
   </script>
 
