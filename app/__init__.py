@@ -14,130 +14,6 @@ app.secret_key = 'hi'
 DB_FILE="database.db"
 cache = {}
 
-#writing them so far... only 6 need to work on more
-# prompts = {
-#     "school_closures": {
-#         "question": "Students and teachers are becoming sick and absent. What do you do?",
-#         "choices": {
-#             "A": {
-#                 "label": "Close all schools",
-#                 "stringency_change": +18,
-#                 "svi_change": +0.02,  
-#             },
-#             "B": {
-#                 "label": "Move to hybrid learning",
-#                 "stringency_change": +8,
-#                 "svi_change": +0.01,
-#             },
-#             "C": {
-#                 "label": "Keep schools open",
-#                 "stringency_change": -5,
-#                 "svi_change": +0.0,
-#             },
-#         }
-#     },
-#     "mask_mandate": {
-#         "question": "A mask mandate is proposed. Do you support it?",
-#         "choices": {
-#             "A": {
-#                 "label": "Enforce a statewide mask mandate",
-#                 "stringency_change": +10,
-#                 "svi_change": -0.01,  
-#             },
-#             "B": {
-#                 "label": "Recommend masks but don't mandate",
-#                 "stringency_change": +3,
-#                 "svi_change": +0.0,
-#             },
-#             "C": {
-#                 "label": "Leave it to individual choice",
-#                 "stringency_change": -8,
-#                 "svi_change": +0.02,
-#             },
-#         }
-#     },
-#     "testing_expansion": {
-#         "question": "Testing is being developed but requires extensive resources. How do you allocate them?",
-#         "choices": {
-#             "A": {
-#                 "label": "Fund free community testing centers statewide",
-#                 "stringency_change": +5,
-#                 "svi_change": -0.04, #kinda big so like maybe gate by stringency idk
-#             },
-#             "B": {
-#                 "label": "Expand testing only at hospitals",
-#                 "stringency_change": +2,
-#                 "svi_change": -0.01,
-#             },
-#             "C": {
-#                 "label": "Rely on private testing, no state funding",
-#                 "stringency_change": -3,
-#                 "svi_change": +0.03, 
-#             },
-#         }
-#     },
-#     "stay_at_home": {
-#         "question": "Cases are rising. Your advisors recommend a stay-at-home order. Do you approve it?",
-#         "choices": {
-#             "A": {
-#                 "label": "Issue a strict stay-at-home order",
-#                 "stringency_change": +20,
-#                 "svi_change": +0.03,  
-#             },
-#             "B": {
-#                 "label": "Issue a limited order for high-risk groups only",
-#                 "stringency_change": +8,
-#                 "svi_change": +0.01,
-#             },
-#             "C": {
-#                 "label": "Decline to issue any order",
-#                 "stringency_change": -10,
-#                 "svi_change": +0.02,
-#             },
-#         }
-#     },
-#     "healthcare_investment": {
-#         "question": "Hospitals are becoming too crowded. What's your response?",
-#         "choices": {
-#             "A": {
-#                 "label": "Emergency fund community health clinics",
-#                 "stringency_change": +3,
-#                 "svi_change": -0.05,  #prob gonna be affected by stringency too
-#             },
-#             "B": {
-#                 "label": "Redirect funds to ICU expansion only",
-#                 "stringency_change": +2,
-#                 "svi_change": -0.02,
-#             },
-#             "C": {
-#                 "label": "No additional healthcare spending",
-#                 "stringency_change": 0,
-#                 "svi_change": +0.03,
-#             },
-#         }
-#     },
-#     "travel_restrictions": {
-#         "question": "Neighboring states are seeing rising infections. Do you restrict travel?", #maybe can do smth cool w the adjacency
-#         "choices": {
-#             "A": {
-#                 "label": "Ban non-essential interstate travel",
-#                 "stringency_change": +15,
-#                 "svi_change": +0.01,
-#             },
-#             "B": {
-#                 "label": "Require quarantine for travelers",
-#                 "stringency_change": +7,
-#                 "svi_change": +0.0,
-#             },
-#             "C": {
-#                 "label": "No travel restrictions",
-#                 "stringency_change": -5,
-#                 "svi_change": +0.01,
-#             },
-#         }
-#     },
-# }
-
 @app.route("/", methods=["GET", "POST"])
 def login():
     error_msg = ""
@@ -255,6 +131,6 @@ def game():
     return render_template("game.html", state_name=session.get("state_name", ""), pops=populations)
 
 if __name__ == "__main__":
-    app.debug = True
+    app.debug = False
     app.run()
 

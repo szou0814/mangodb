@@ -99,3 +99,10 @@ sarahZ -- 2026-4-16 23:45
 - started writing some prompts and choices... 6 so far
 - calculation discussion: to save on load time, either regression or precomputing and storing in dict, wesley eventually worked on regression
 - joyce worked on getting data to maps and js interactions w/ flask, helped her
+
+sarahZ -- 2026-4-19 20:08
+- finished writing prompts and choices in logic.py
+- finished functions to select prompt and handle choices
+- updated run_simulation to handle prompts and choices
+- debugged 
+- did some html/css for narration
