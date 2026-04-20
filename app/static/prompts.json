@@ -1,0 +1,330 @@
+{
+  "prompts": {
+      "school_closures": {
+          "question": "Students and teachers are becoming sick and absent. What do you do?",
+          "choices": {
+              "A": {
+                  "label": "Close all schools",
+                  "stringency_change": 18,
+                  "svi_change": 0.02
+              },
+              "B": {
+                  "label": "Move to hybrid learning",
+                  "stringency_change": 8,
+                  "svi_change": 0.01
+              },
+              "C": {
+                  "label": "Keep schools open",
+                  "stringency_change": -5,
+                  "svi_change": 0.0
+              }
+          }
+      },
+      "mask_mandate": {
+          "question": "A mask mandate is proposed. Do you support it?",
+          "choices": {
+              "A": {
+                  "label": "Enforce a statewide mask mandate",
+                  "stringency_change": 10,
+                  "svi_change": -0.01
+              },
+              "B": {
+                  "label": "Recommend masks but don't mandate it",
+                  "stringency_change": 3,
+                  "svi_change": 0.0
+              },
+              "C": {
+                  "label": "Leave it to individual choice",
+                  "stringency_change": -8,
+                  "svi_change": 0.02
+              }
+          }
+      },
+      "testing_expansion": {
+          "question": "Testing is being developed but requires extensive resources. How do you allocate them?",
+          "choices": {
+              "A": {
+                  "label": "Fund free community testing centers statewide",
+                  "stringency_change": 5,
+                  "svi_change": -0.03
+              },
+              "B": {
+                  "label": "Expand testing only at hospitals",
+                  "stringency_change": 2,
+                  "svi_change": -0.01
+              },
+              "C": {
+                  "label": "Rely on private testing, no state funding",
+                  "stringency_change": -3,
+                  "svi_change": 0.03
+              }
+          }
+      },
+      "stay_at_home": {
+          "question": "Cases are rising. Your advisors recommend a stay-at-home order. Do you approve it?",
+          "choices": {
+              "A": {
+                  "label": "Issue a strict stay-at-home order",
+                  "stringency_change": 20,
+                  "svi_change": 0.02
+              },
+              "B": {
+                  "label": "Issue a limited order for high-risk groups only",
+                  "stringency_change": 8,
+                  "svi_change": 0.01
+              },
+              "C": {
+                  "label": "Decline to issue any order",
+                  "stringency_change": -10,
+                  "svi_change": 0.03
+              }
+          }
+      },
+      "healthcare_investment": {
+          "question": "Hospitals are becoming too crowded. What's your response?",
+          "choices": {
+              "A": {
+                  "label": "Emergency fund community health clinics",
+                  "stringency_change": 3,
+                  "svi_change": -0.03
+              },
+              "B": {
+                  "label": "Redirect funds to ICU expansion only",
+                  "stringency_change": 2,
+                  "svi_change": -0.02
+              },
+              "C": {
+                  "label": "No additional healthcare spending",
+                  "stringency_change": 0,
+                  "svi_change": 0.03
+              }
+          }
+      },
+      "travel_restrictions": {
+          "question": "Neighboring states are seeing rising infections. Do you restrict travel?",
+          "choices": {
+              "A": {
+                  "label": "Ban non-essential interstate travel",
+                  "stringency_change": 15,
+                  "svi_change": 0.01
+              },
+              "B": {
+                  "label": "Require quarantine for travelers",
+                  "stringency_change": 7,
+                  "svi_change": 0.0
+              },
+              "C": {
+                  "label": "No travel restrictions",
+                  "stringency_change": -5,
+                  "svi_change": 0.01
+              }
+          }
+      },
+      "vaccine_accessibility": {
+          "question": "A vaccine has been developled. How do you prioritize distributing it?",
+          "choices": {
+              "A": {
+                  "label": "Prioritize healthcare workers and the elderly",
+                  "stringency_change": -5,
+                  "svi_change": -0.04
+              },
+              "B": {
+              "label": "Distribute evenly across all age groups",
+              "stringency_change": 0,
+              "svi_change": 0.01
+              },
+              "C": {
+                  "label": "Let capitalism decide who gets the vaccine",
+                  "stringency_change": -8,
+                  "svi_change": 0.03
+              }
+          }
+      },
+      "restaurant_closures": {
+          "question": "Large groups of people are being infected due to indoor dining. What do you do?",
+          "choices": {
+              "A": {
+                  "label": "Close all indoor dining immediately",
+                  "stringency_change": 12,
+                  "svi_change": 0.02
+              },
+              "B": {
+                  "label": "Reduce indoor capacity to 25%",
+                  "stringency_change": 6,
+                  "svi_change": 0.01
+              },
+              "C": {
+                  "label": "Issue health guidelines but keep dining open",
+                  "stringency_change": -2,
+                  "svi_change": 0.01
+              }
+          }
+      },
+      "essential_worker_protections": {
+          "question": "Essential workers are getting sick. How do you respond?",
+          "choices": {
+              "A": {
+                  "label": "Mandate hazard pay for all essential workers",
+                  "stringency_change": 8,
+                  "svi_change": -0.04
+              },
+              "B": {
+                  "label": "Issue guidelines but leave enforcement to employers",
+                  "stringency_change": 2,
+                  "svi_change": -0.01
+              },
+              "C": {
+                  "label": "Take no additional action",
+                  "stringency_change": -2,
+                  "svi_change": 0.03
+              }
+          }
+      },
+      "misinformation_response": {
+          "question": "Misinformation about the outbreak is spreading rapidly online. How do you respond?",
+          "choices": {
+              "A": {
+                  "label": "Launch a state-funded public health media campaign",
+                  "stringency_change": 3,
+                  "svi_change": -0.03
+              },
+              "B": {
+                  "label": "Partner with social platforms to flag misinformation",
+                  "stringency_change": 1,
+                  "svi_change": -0.01
+              },
+              "C": {
+                  "label": "Take no official stance on misinformation",
+                  "stringency_change": -2,
+                  "svi_change": 0.02
+              }
+          }
+      },
+      "unemployment_benefits": {
+          "question": "Unemployment is rising due to closures. Do you expand benefits?",
+          "choices": {
+              "A": {
+                  "label": "Expand benefits to $600/week",
+                  "stringency_change": 3,
+                  "svi_change": -0.04
+              },
+              "B": {
+                  "label": "Slightly expand benefits based on income",
+                  "stringency_change": 1,
+                  "svi_change": -0.02
+              },
+              "C": {
+                  "label": "No change to unemployment policy",
+                  "stringency_change": -1,
+                  "svi_change": 0.03
+              }
+          }
+      },
+      "outdoor_gathering_limits": {
+          "question": "Summer is coming and people are starting to go outside for parties. Do you restrict outdoor events?",
+          "choices": {
+              "A": {
+                  "label": "Ban all outdoor gatherings over 10 people",
+                  "stringency_change": 10,
+                  "svi_change": 0.01
+              },
+              "B": {
+                  "label": "Cap outdoor gatherings at 50 with distancing requirements",
+                  "stringency_change": 4,
+                  "svi_change": 0.0
+              },
+              "C": {
+                  "label": "No outdoor gathering restrictions",
+                  "stringency_change": -5,
+                  "svi_change": 0.02
+              }
+          }
+      },
+      "heat_wave": {
+          "question": "A heat wave is forcing people to choose between COVID exposure and cooling. How do you respond?",
+          "choices": {
+              "A": {
+                  "label": "Open state-funded cooling centers with COVID safety protocols",
+                  "stringency_change": 6,
+                  "svi_change": -0.04
+              },
+              "B": {
+                  "label": "Issue heat safety guidelines alongside existing COVID advice",
+                  "stringency_change": 2,
+                  "svi_change": -0.01
+              },
+              "C": {
+                  "label": "Let them thug it out",
+                  "stringency_change": 0,
+                  "svi_change": 0.03
+              }
+          }
+      },
+      "industrial_pollution": {
+          "question": "Factories near low-income communities are linked to higher COVID mortality rates due to respiratory damage. Do you act?",
+          "choices": {
+              "A": {
+                  "label": "Temporarily shut down highest-polluting facilities near vulnerable communities",
+                  "stringency_change": 9,
+                  "svi_change": -0.04
+              },
+              "B": {
+                  "label": "Issue emissions reduction orders but allow continued operation",
+                  "stringency_change": 4,
+                  "svi_change": -0.02
+              },
+              "C": {
+                  "label": "No additional restrictions on industrial operations",
+                  "stringency_change": -2,
+                  "svi_change": 0.04
+              }
+          }
+      },
+      "power_grid_failure": {
+          "question": "Extreme weather has caused blackouts, disrupting cold storage for vaccines and medical equipment. What do you prioritize?",
+          "choices": {
+              "A": {
+                  "label": "Redirect emergency power to medical facilities and vaccine storage first",
+                  "stringency_change": 6,
+                  "svi_change": -0.03
+              },
+              "B": {
+                  "label": "Distribute power evenly across all necessary infrastructure",
+                  "stringency_change": 3,
+                  "svi_change": -0.01
+              },
+              "C": {
+                  "label": "Leave it to utility companies",
+                  "stringency_change": -1,
+                  "svi_change": 0.03
+              }
+          }
+      }
+  },
+
+  "prompt_reqs": {
+      "vaccine_accessibility": ["testing_expansion", "healthcare_investment"],
+      "unemployment_benefits": ["stay_at_home", "restaurant_closures"],
+      "power_grid_failure": ["heat_wave"],
+      "outdoor_gathering_limits": ["stay_at_home", "mask_mandate"]
+  },
+
+  "high_dens": [
+      "restaurant_closures", "misinformation_response"
+  ],
+
+  "low_dens": [
+      "industrial_pollution"
+  ],
+
+  "can_fail": [
+      ["testing_expansion", "A"],
+      ["vaccine_accessibility", "A"],
+      ["misinformation_response", "A"],
+      ["mask_mandate", "A"],
+      ["essential_worker_protections", "A"],
+      ["unemployment_benefits", "A"],
+      ["healthcare_investment", "A"],
+      ["heat_wave", "A"]
+  ]
+}
