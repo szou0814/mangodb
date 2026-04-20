@@ -231,16 +231,27 @@
         }
       });
 
-      const data = await response.json();
+      console.log(response);
+      const data = JSON.parse(response);
+      console.log(data);
       currData = data;
       return currData;
+    }
+
+    async function fetchPageSource() {
+      let reset = new XMLHttpRequest();
+      reset.open('GET', window.location.href, true);
+      reset.send();
     }
 
     async function updateGraphs() {
       console.log('i worked');
       const data = await fetchData();
-      console.log(data);
-      if (data !== 'end') {
+      await fetchPageSource();
+
+      console.log('aa');
+      if (data != 'end') {
+        console.log('i here');
         if (!isInitial) {
           data.forEach(d => {
             if (d.infected > 0) {
@@ -259,8 +270,11 @@
             ));
           });
         } else {
+          console.log('iaa here');
           data.forEach(d => {
+            console.log('a');
             if (d.infected > 0) {
+              console.log('b');
               createDot(d.state, d.infected);
               let point = mapElem.createPoint(d.state);
 
@@ -272,10 +286,10 @@
             let prevDate = new Date(d.date);
             prevDate.setDate(prevDate.getDate() - 1);
 
-            areaData.push(Object.assign({ date: prevDate },
-              { state: d.state },
-              { infected: 0 }
-            ));
+            // areaData.push(Object.assign({ date: prevDate },
+            //   { state: d.state },
+            //   { infected: 0 }
+            // ));
             areaData.push(Object.assign({ date: new Date(d.date) },
               { state: d.state },
               { infected: d.infected }
@@ -310,10 +324,10 @@
 
     document.getElementById('but1').addEventListener("click", () => {
       updateGraphs();
-      let updates = setInterval(() => {
-        console.log('ran');
-        updateGraphs()
-      }, 1000);
+      // let updates = setInterval(() => {
+      //   console.log('ran');
+      //   updateGraphs()
+      // }, 1000);
     })
   </script>
 
