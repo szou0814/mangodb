@@ -11,7 +11,7 @@ class SimpleModel(nn.Module):
         self.fc1 = nn.Linear(5, 16)
         self.relu = nn.ReLU()
         self.fc2 = nn.Linear(16, 1)
-        
+
     def forward(self, x):
         return self.fc2(self.relu(self.fc1(x)))
 
@@ -32,12 +32,12 @@ class CovidModels:
             })
         ).reset_index()
         state_stats.rename(columns={"STATE": "state"}, inplace=True)
-        
+
         # parse state_trends
         trends_df = pd.read_csv(os.path.join(data_dir, "state_trends.csv"))
         pop_map = dict(zip(trends_df["state"], trends_df["population"]))
         density_map = dict(zip(trends_df["state"], trends_df["pop_density"]))
-        
+
         state_stats["population"] = state_stats["state"].map(pop_map)
         state_stats["density"] = state_stats["state"].map(density_map)
 
@@ -75,37 +75,37 @@ class CovidModels:
             model = SimpleModel()
             criterion = nn.MSELoss()
             optimizer = optim.Adam(model.parameters(), lr=0.01)
-            
+
             X_mean = X_data.mean(axis=0)
             X_std = X_data.std(axis=0) + 1e-8
             X_norm = (X_data - X_mean) / X_std
-            
+
             y_mean = y_data.mean(axis=0)
             y_std = y_data.std(axis=0) + 1e-8
             y_norm = (y_data - y_mean) / y_std
 
             tensor_X = torch.tensor(X_norm.tolist())
             tensor_y = torch.tensor(y_norm.tolist())
-            
+
             for epoch in range(epochs):
                 optimizer.zero_grad()
                 outputs = model(tensor_X)
                 loss = criterion(outputs, tensor_y)
                 loss.backward()
                 optimizer.step()
-                
+
             return model, (X_mean, X_std, y_mean, y_std)
 
         self.inf_model, self.inf_stats = _train_internal(X, y_inf)
         self.death_model, self.death_stats = _train_internal(X, y_death)
 
     def load(self, model_path="models.pth"):
-        data = torch.load(model_path)
+        data = torch.load(model_path, weights_only = False)
         self.inf_model = SimpleModel()
         self.inf_model.load_state_dict(data['inf_model'])
         self.inf_model.eval()
         self.inf_stats = data['inf_stats']
-        
+
         self.death_model = SimpleModel()
         self.death_model.load_state_dict(data['death_model'])
         self.death_model.eval()
@@ -124,10 +124,10 @@ class CovidModels:
         x_input = [float(population), float(density), float(current_infected), float(vulnerability), float(stringency)]
         x_norm = [(x_input[i] - x_mean[i]) / x_std[i] for i in range(5)]
         tensor_x = torch.tensor([x_norm], dtype=torch.float32)
-        
+
         with torch.no_grad():
             output_norm = model(tensor_x).item()
-            
+
         output = output_norm * y_std[0] + y_mean[0]
         return max(0, output)
 
@@ -141,7 +141,7 @@ def get_models():
     models = CovidModels()
     model_path = os.path.join(os.path.dirname(__file__), "models.pth")
     data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-    
+
     if os.path.exists(model_path):
         models.load(model_path)
     else:
@@ -149,7 +149,7 @@ def get_models():
         models.train(data_dir=data_dir)
         models.save(model_path)
         print(f"finished and saved to {model_path}")
-        
+
     return models
 
 if __name__ == "__main__":
