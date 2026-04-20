@@ -9,7 +9,7 @@ import json
 import os
 
 _dir = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(_dir, '..', 'data', 'prompts.json'), 'r') as _f:
+with open(os.path.join(_dir, 'static', 'prompts.json'), 'r') as _f:
     _data = json.load(_f)
 
 prompts = _data["prompts"]
@@ -40,15 +40,15 @@ def get_prompt(tick, state, dens, stringency, svi, seen_prompts):
     poss = []
     for key, prompt_dict in prompts.items():
         if key in seen_prompts: continue
-        if key in high_dens and dens < 200: continue 
+        if key in high_dens and dens < 200: continue
         if key in low_dens and dens > 150: continue
-        if key in prompt_reqs: 
+        if key in prompt_reqs:
             if not any(p in seen_prompts for p in prompt_reqs[key]): continue
         choiceValid = False
         for choice in prompt_dict["choices"].values():
             newStringency = stringency + choice["stringency_change"]
             newSvi = svi + choice["svi_change"]
-            if (10 < newStringency < 90 and 0.05 < newSvi < 0.95): 
+            if (10 < newStringency < 90 and 0.05 < newSvi < 0.95):
                 choiceValid = True
                 break
         if not choiceValid: continue
@@ -64,14 +64,14 @@ def handle_choice(prompt, choice, stringency, svi, seen_prompts):
     failed = False
     msg = ""
     if (prompt, choice) in can_fail:
-        if r.random() < 0.20: 
+        if r.random() < 0.20:
             failed = True
             stringencyChange = stringencyChange // 2
             sviChange = -(sviChange * 0.5)
             msg = "Your policy was not well-received by the public and had limited effects."
     newStringency, newSvi = limit(stringency + stringencyChange, svi + sviChange)
     return newStringency, newSvi, failed, message
-            
+
 
 def get_adjacency():
     url = "https://gist.githubusercontent.com/longbai/44f446bc907ada728948e4c15aca252e/raw"
@@ -92,26 +92,26 @@ class Simulation:
         self.start_state = start_state
         self.adj_map = adj_map
         self.covid_models = covid_models
-        
+
         self.pop = pd.DataFrame(index=STATES)
         self.start_date = datetime(2020, 1, 20)
         self.pop[f"{self.start_date}_infected"] = 0.0
         self.pop[f"{self.start_date}_resistant"] = 0.0
-        
+
         self.vulnerability_index = []
         self.population_density = []
         self.stringency_index = []
-        
+
         self.pop[f"{self.start_date}_population"] = [self.get_initial_population(state) for state in self.pop.index]
         self.select_state(start_state, self.start_date)
-        
+
         self.curr_stringency = self.stringency_index[STATES.index(start_state)] if self.stringency_index else 50.0
         self.curr_svi = self.vulnerability_index[STATES.index(start_state)] if self.vulnerability_index else 0.5
         self.start_density = self.population_density[STATES.index(start_state)] if self.population_density else 100.0
-        
+
         self.seen_prompts = set()
         self.pending_prompts = []
-        
+
         self.tick_count = 0
         self.curr_date = self.start_date
         print("Simulation initialized.")
@@ -139,7 +139,7 @@ class Simulation:
         curr_pop = self.pop.loc[state, f"{date}_population"]
         curr_res = self.pop.loc[state, f"{date}_resistant"]
         eff_pop = max(0, curr_pop - curr_res)
-        
+
         if self.covid_models is not None:
              new_infections = self.covid_models.predict_new_infections(eff_pop, self.population_density[idx], curr_inf, self.vulnerability_index[idx], self.stringency_index[idx])
              return curr_inf + new_infections
@@ -196,12 +196,12 @@ class Simulation:
         if col_week_ago in self.pop.columns:
             past_infected = self.pop.loc[state, col_week_ago]
             deaths = self.get_deaths_for_state(state, curr_pop, past_infected)
-                
+
             survivors = max(0, past_infected - deaths)
             new_pop = max(0, curr_pop - deaths)
             new_res = min(new_pop, round(curr_res + survivors / 2))
             return new_pop, new_res, survivors / 2
-            
+
         return curr_pop, curr_res, 0
 
     def step(self, current_date, next_date):
@@ -244,22 +244,22 @@ class Simulation:
             prompt, prompt_dict = result
             self.seen_prompts.add(prompt)
             self.pending_prompts.append({ "tick": self.tick_count, "date": str(next_date.date()), "key": prompt, "prompt": prompt_dict})
-        
+
         self.curr_date = next_date
         self.tick_count += 1
-        
+
         return self.pop
 
 if __name__ == "__main__":
     from model import get_models
     import os
-    
-    
-    models = get_models()  
+
+
+    models = get_models()
     adj_map = get_adjacency()
-    
+
     sim = Simulation("NY", adj_map, covid_models=models)
     for _ in range(152):
         final_df, next_cols = sim.tick()
-        
+
     print(final_df.iloc[:, -6:])

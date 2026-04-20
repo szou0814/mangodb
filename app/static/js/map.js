@@ -60,7 +60,7 @@ export async function map() {
       .attr("stroke", "black"); // sets the outline of these dots
 
   const dot = g.selectAll("circle") // selects all cuurent and new circle elements inside g
-    .data(data) // binds this to data array
+    .data(mapData) // binds this to data array
     .join("circle") // binds and creates a circle DOM element to each new data point
       .attr("transform", d => `translate(${d})`); // transforms and translates each dot to their [x,y] coordinate
         // the d essentially just comes from data and is whatever object thing that was appended there

@@ -75,6 +75,7 @@ def state_stats():
 
 @app.route("/game", methods=["GET", "POST"])
 def game():
+    global cache;
     STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY",
               "LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND",
               "OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"]
@@ -107,10 +108,10 @@ def game():
         if 'state_name' not in session:
             session["state_name"] = STATES[STATE_NAMES.index(request.form.get("state_name"))]
 
-    if 'data' not in cache:
+    if cache.get('data') is None:
         map_adj = logic.get_adjacency()
         sim = logic.Simulation(session['state_name'], map_adj)
-        
+
         # Tick the simulation
         print("tickin")
         for _ in range(152):
@@ -135,6 +136,7 @@ def game():
                 })
         print("done data thing")
         cache['data'] = data
+        processed = True
 
     populations = []
     for state in STATE_NAMES:
@@ -143,6 +145,5 @@ def game():
     return render_template("game.html", state_name=session.get("state_name", ""), pops=populations)
 
 if __name__ == "__main__":
-    app.debug = False
+    app.debug = True
     app.run()
-
