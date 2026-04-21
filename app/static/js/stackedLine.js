@@ -4,25 +4,25 @@ function StackedAreaChart(data, {
   x = ([x]) => x, // given d in data, returns the (ordinal) x-value
   y = ([, y]) => y, // given d in data, returns the (quantitative) y-value
   z = () => 1, // given d in data, returns the (categorical) z-value
-  marginTop = 130, // top margin, in pixels
+  marginTop = 150, // top margin, in pixels
   marginRight = 30, // right margin, in pixels
   marginBottom = 30, // bottom margin, in pixels
-  marginLeft = 40, // left margin, in pixels
+  marginLeft = 80, // left margin, in pixels
   width = 740, // outer width, in pixels
   height = 400, // outer height, in pixels
   xType = d3.scaleUtc, // type of x-scale
   xDomain, // [xmin, xmax]
   xRange = [marginLeft, width - marginRight], // [left, right]
   yType = d3.scaleLinear, // type of y-scale
-  yDomain = [0, 700000], // [ymin, ymax]
+  yDomain, // [ymin, ymax]
   yRange = [height - marginBottom, marginTop], // [bottom, top]
   zDomain, // array of z-values
   offset = d3.stackOffsetDiverging, // stack offset method
   order = d3.stackOrderNone, // stack order method
   xFormat, // a format specifier string for the x-axis
-  yFormat, // a format specifier for the y-axis
+  yFormat = ",.0f", // a format specifier for the y-axis
   yLabel, // a label for the y-axis
-  colors = d3.schemeTableau10, // array of colors for z
+  colors = d3.quantize(d3.interpolateInferno, 50), // array of colors for z
 } = {}) {
   const STATE_NAMES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
     "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri",
@@ -92,6 +92,29 @@ function StackedAreaChart(data, {
 
   var areaGroup = svg.append('g');
 
+  const size = STATE_NAMES.length/6 * 1.2;
+  svg.selectAll("legendSquares")
+    .data(STATE_NAMES)
+    .enter()
+    .append("rect")
+    .attr("x", function(d,i) { return (marginLeft-50) + (Math.floor(i/9) * (STATE_NAMES.length/4 * 9.9)) })
+    .attr("y", function(d,i) { return Math.floor(i%9)*(size+5) })
+    .attr("width", size)
+    .attr("height", size)
+    .style("fill", function(d) { return color(d) })
+
+  svg.selectAll("legendLabels")
+    .data(STATE_NAMES)
+    .enter()
+    .append("text")
+    .attr("x", function(d,i) { return (marginLeft-50) + ((size*1.2) + (Math.floor(i/9) * (STATE_NAMES.length/4 * 9.9))) })
+    .attr("y", function(d,i) { return Math.floor(i%9)*(size+5) + size/1.6 })
+    .style("fill", 'white')
+    .text(function(d) { return d })
+    .attr("text-anchor", "left")
+    .style("alignment-baseline", "middle")
+    .style("font-size", `${STATE_NAMES.length/6 * 1.8}`)
+
   return Object.assign(svg.node(), {
     update(date) {
       console.log(areaData);
@@ -99,7 +122,6 @@ function StackedAreaChart(data, {
       Y = d3.map(areaData, y);
       Z = d3.map(areaData, z);
 
-      yDomain = d3.extent(series.flat(2));
       xDomain = d3.extent(X);
       zDomain = Z;
       zDomain = new d3.InternSet(zDomain);
@@ -113,6 +135,8 @@ function StackedAreaChart(data, {
           .offset(offset)
         (d3.rollup(I, ([i]) => i, i => X[i], i => Z[i]))
         .map(s => s.map(d => Object.assign(d, {i: d.data[1].get(s.key)})));
+
+      yDomain = d3.extent(series.flat(2));
 
       yScale = yType(yDomain, yRange);
       xScale = xType(xDomain, xRange);
@@ -159,28 +183,6 @@ function StackedAreaChart(data, {
             .call(xAxis);
       }
 
-      const size = zDomain.size/6 * 1.5
-      svg.selectAll("legendSquares")
-        .data(STATE_NAMES)
-        .enter()
-        .append("rect")
-        .attr("x", function(d,i) { return (marginLeft-30) + (Math.floor(i/6) * (zDomain.size/6 * 10)) })
-        .attr("y", function(d,i) { return Math.floor(i%6)*(size+5) })
-        .attr("width", size)
-        .attr("height", size)
-        .style("fill", function(d) { return color(d) })
-
-      svg.selectAll("legendLabels")
-        .data(STATE_NAMES)
-        .enter()
-        .append("text")
-        .attr("x", function(d,i) { return (marginLeft-30) + ((size*1.2) + (Math.floor(i/6) * (zDomain.size/6 * 10))) })
-        .attr("y", function(d,i) { return Math.floor(i%6)*(size+5) + size/1.2 })
-        .style("fill", 'white')
-        .text(function(d) { return d })
-        .attr("text-anchor", "left")
-        .style("alignment-baseline", "middle")
-        .style("font-size", `${zDomain.size/6}`)
       }
     }
   );
