@@ -61,11 +61,11 @@ function StackedAreaChart(data, {
 
   // Construct scales and axes.
   var xScale = xType(0, xRange);
-  const yScale = yType(yDomain, yRange);
+  var yScale = yType(yDomain, yRange);
   var color = d3.scaleOrdinal(zDomain, colors);
 
   var xAxis = d3.axisBottom(xScale).ticks(width / 80, xFormat).tickSizeOuter(0);
-  const yAxis = d3.axisLeft(yScale).ticks(height / 50, yFormat);
+  var yAxis = d3.axisLeft(yScale).ticks(height / 50, yFormat);
 
   var area = d3.area()
       .x(({i}) => xScale(X[i]))
@@ -78,7 +78,7 @@ function StackedAreaChart(data, {
       .attr("viewBox", [0, 0, width, height])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
-  svg.append("g")
+  var yAxisGroup = svg.append("g")
       .attr("transform", `translate(${marginLeft},0)`)
       .call(yAxis)
       .call(g => g.select(".domain").remove())
@@ -99,6 +99,7 @@ function StackedAreaChart(data, {
       Y = d3.map(areaData, y);
       Z = d3.map(areaData, z);
 
+      yDomain = d3.extent(series.flat(2));
       xDomain = d3.extent(X);
       zDomain = Z;
       zDomain = new d3.InternSet(zDomain);
@@ -113,62 +114,73 @@ function StackedAreaChart(data, {
         (d3.rollup(I, ([i]) => i, i => X[i], i => Z[i]))
         .map(s => s.map(d => Object.assign(d, {i: d.data[1].get(s.key)})));
 
-        xScale = xType(xDomain, xRange);
-        area = d3.area()
-            .x(({i}) => xScale(X[i]))
-            .y0(([y1]) => yScale(y1))
-            .y1(([, y2]) => yScale(y2));
+      yScale = yType(yDomain, yRange);
+      xScale = xType(xDomain, xRange);
+      area = d3.area()
+          .x(({i}) => xScale(X[i]))
+          .y0(([y1]) => yScale(y1))
+          .y1(([, y2]) => yScale(y2));
 
-        color = d3.scaleOrdinal(zDomain, colors);
+      color = d3.scaleOrdinal(zDomain, colors);
 
-        xAxis = d3.axisBottom(xScale).ticks(width / 80, xFormat).tickSizeOuter(0);
+      xAxis = d3.axisBottom(xScale).ticks(width / 80, xFormat).tickSizeOuter(0);
+      yAxis = d3.axisLeft(yScale).ticks(height / 50, yFormat);
 
-        xAxisGroup.remove();
-        areaGroup.remove();
+      yAxisGroup.remove();
+      xAxisGroup.remove();
+      areaGroup.remove();
 
-        areaGroup = svg.append("g")
-          .selectAll("path")
-          .data(series)
-          .join("path")
-            .attr("fill", ([{i}]) => color(Z[i]))
-            .attr("d", area);
+      areaGroup = svg.append("g")
+        .selectAll("path")
+        .data(series)
+        .join("path")
+          .attr("fill", ([{i}]) => color(Z[i]))
+          .attr("d", area);
 
-        areaGroup.append("title")
-            .text(([{i}]) => Z[i]);
+      areaGroup.append("title")
+          .text(([{i}]) => Z[i]);
 
-        if (areaGroup.size() !== 0) {
-          xAxisGroup = svg.append("g")
-              .attr("transform", `translate(0,${height - marginBottom})`)
-              .call(xAxis);
-        } else {
-          xAxis = d3.axisBottom(xScale).ticks(0);
-          xAxisGroup = svg.append("g")
-              .attr("transform", `translate(0,${height - marginBottom})`)
-              .call(xAxis);
-        }
+      yAxisGroup = svg.append("g")
+          .attr("transform", `translate(${marginLeft},0)`)
+          .call(yAxis)
+          .call(g => g.select(".domain").remove())
+          .call(g => g.selectAll(".tick line").clone()
+              .attr("x2", width - marginLeft - marginRight)
+              .attr("stroke-opacity", 0.1))
 
-        const size = zDomain.size/6 * 1.5
-        svg.selectAll("legendSquares")
-          .data(STATE_NAMES)
-          .enter()
-          .append("rect")
-          .attr("x", function(d,i) { return (marginLeft-30) + (Math.floor(i/6) * (zDomain.size/6 * 10)) })
-          .attr("y", function(d,i) { return Math.floor(i%6)*(size+5) })
-          .attr("width", size)
-          .attr("height", size)
-          .style("fill", function(d) { return color(d) })
+      if (areaGroup.size() !== 0) {
+        xAxisGroup = svg.append("g")
+            .attr("transform", `translate(0,${height - marginBottom})`)
+            .call(xAxis);
+      } else {
+        xAxis = d3.axisBottom(xScale).ticks(0);
+        xAxisGroup = svg.append("g")
+            .attr("transform", `translate(0,${height - marginBottom})`)
+            .call(xAxis);
+      }
 
-        svg.selectAll("legendLabels")
-          .data(STATE_NAMES)
-          .enter()
-          .append("text")
-          .attr("x", function(d,i) { return (marginLeft-30) + ((size*1.2) + (Math.floor(i/6) * (zDomain.size/6 * 10))) })
-          .attr("y", function(d,i) { return Math.floor(i%6)*(size+5) + size/1.2 })
-          .style("fill", 'white')
-          .text(function(d) { return d })
-          .attr("text-anchor", "left")
-          .style("alignment-baseline", "middle")
-          .style("font-size", `${zDomain.size/6}`)
+      const size = zDomain.size/6 * 1.5
+      svg.selectAll("legendSquares")
+        .data(STATE_NAMES)
+        .enter()
+        .append("rect")
+        .attr("x", function(d,i) { return (marginLeft-30) + (Math.floor(i/6) * (zDomain.size/6 * 10)) })
+        .attr("y", function(d,i) { return Math.floor(i%6)*(size+5) })
+        .attr("width", size)
+        .attr("height", size)
+        .style("fill", function(d) { return color(d) })
+
+      svg.selectAll("legendLabels")
+        .data(STATE_NAMES)
+        .enter()
+        .append("text")
+        .attr("x", function(d,i) { return (marginLeft-30) + ((size*1.2) + (Math.floor(i/6) * (zDomain.size/6 * 10))) })
+        .attr("y", function(d,i) { return Math.floor(i%6)*(size+5) + size/1.2 })
+        .style("fill", 'white')
+        .text(function(d) { return d })
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle")
+        .style("font-size", `${zDomain.size/6}`)
       }
     }
   );
