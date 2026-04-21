@@ -186,6 +186,7 @@
     var total_infected = 0;
     var isInitial = true;
     var running = false;
+    var updates;
 
     const STATE_NAMES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
       "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri",
@@ -283,13 +284,6 @@
               console.log('d');
             }
 
-            // let prevDate = new Date(d.date);
-            // prevDate.setDate(prevDate.getDate() - 1);
-
-            // areaData.push(Object.assign({ date: prevDate },
-            //   { state: d.state },
-            //   { infected: 0 }
-            // ));
             areaData.push(Object.assign({ date: new Date(d.date) },
               { state: d.state },
               { infected: d.infected }
@@ -303,7 +297,9 @@
         console.log("mapElem =", window.stackedLineElem);
         mapElem.update(new Date(data[0].date));
         stackedLineElem.update(new Date(data[0].date));
-      };
+      } else {
+        clearInterval(updates);
+      }
     };
 
     function createDot(state, infected) {
@@ -317,21 +313,23 @@
         let change = infected - state_total_infected[state];
         state_total_infected[state] = infected;
 
-        return (change / pops[STATE_NAMES.indexOf(state)] >= 0.005)
+        return true;
+        // return (change / pops[STATE_NAMES.indexOf(state)] >= 0.005)
       } else {
         state_total_infected[state] = infected;
         console.log('i got here');
-        return (infected / pops[STATE_NAMES.indexOf(state)] >= 0.005)
+        return true;
+        // return (infected / pops[STATE_NAMES.indexOf(state)] >= 0.005)
       }
     };
 
     document.getElementById('but1').addEventListener("click", () => {
       updateGraphs();
       if (!running) {
-          let updates = setInterval(() => {
+          updates = setInterval(() => {
             console.log('ran');
             updateGraphs()
-          }, 2000);
+          }, 1000);
           running = true;
         }
     })

@@ -24,6 +24,12 @@ function StackedAreaChart(data, {
   yLabel, // a label for the y-axis
   colors = d3.schemeTableau10, // array of colors for z
 } = {}) {
+  const STATE_NAMES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
+    "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri",
+    "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
+    "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
+    "Wisconsin", "Wyoming"];
+
   // Compute values.
   var X = d3.map(data, x);
   var Y = d3.map(data, y);
@@ -71,29 +77,6 @@ function StackedAreaChart(data, {
       .attr("height", height)
       .attr("viewBox", [0, 0, width, height])
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
-
-  const size = zDomain.size/6 * 7
-  svg.selectAll("legendSquares")
-    .data(zDomain)
-    .enter()
-    .append("rect")
-    .attr("x", function(d,i) { return marginLeft + (Math.floor(i/6) * (zDomain.size/6 * 110)) })
-    .attr("y", function(d,i) { return Math.floor(i%6)*(size+5) })
-    .attr("width", size)
-    .attr("height", size)
-    .style("fill", function(d) { return color(d) })
-
-  svg.selectAll("legendLabels")
-    .data(zDomain)
-    .enter()
-    .append("text")
-    .attr("x", function(d,i) { return marginLeft + ((size*1.2) + (Math.floor(i/6) * (zDomain.size/6 * 110))) })
-    .attr("y", function(d,i) { return Math.floor(i%6)*(size+5) + size/1.2 })
-    .style("fill", 'white')
-    .text(function(d) { return d })
-    .attr("text-anchor", "left")
-    .style("alignment-baseline", "middle")
-    .style("font-size", `${zDomain.size/6 * 4}`)
 
   svg.append("g")
       .attr("transform", `translate(${marginLeft},0)`)
@@ -163,6 +146,29 @@ function StackedAreaChart(data, {
               .attr("transform", `translate(0,${height - marginBottom})`)
               .call(xAxis);
         }
+
+        const size = zDomain.size/6 * 1.5
+        svg.selectAll("legendSquares")
+          .data(STATE_NAMES)
+          .enter()
+          .append("rect")
+          .attr("x", function(d,i) { return (marginLeft-30) + (Math.floor(i/6) * (zDomain.size/6 * 10)) })
+          .attr("y", function(d,i) { return Math.floor(i%6)*(size+5) })
+          .attr("width", size)
+          .attr("height", size)
+          .style("fill", function(d) { return color(d) })
+
+        svg.selectAll("legendLabels")
+          .data(STATE_NAMES)
+          .enter()
+          .append("text")
+          .attr("x", function(d,i) { return (marginLeft-30) + ((size*1.2) + (Math.floor(i/6) * (zDomain.size/6 * 10))) })
+          .attr("y", function(d,i) { return Math.floor(i%6)*(size+5) + size/1.2 })
+          .style("fill", 'white')
+          .text(function(d) { return d })
+          .attr("text-anchor", "left")
+          .style("alignment-baseline", "middle")
+          .style("font-size", `${zDomain.size/6}`)
       }
     }
   );

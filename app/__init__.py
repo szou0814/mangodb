@@ -94,7 +94,9 @@ def game():
             newData = addToDict(df, session['ticks'])
             session['ticks'] = session['ticks'] + 1
 
-            print(newData)
+            if session['ticks'] > 156:
+                return 'end'
+                
             return jsonify(newData)
 
         if 'state_name' not in session or session["state_name"] != request.form.get("state_name"):
