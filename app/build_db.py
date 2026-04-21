@@ -126,7 +126,7 @@ def get_statestats(state_id):
 def get_populations():
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
-    c.execute("SELECT population FROM STATES")
+    c.execute("SELECT population_density FROM STATES")
     result = [state[0] for state in c.fetchall()]
     db.close()
     return result

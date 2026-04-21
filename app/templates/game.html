@@ -243,8 +243,7 @@
   <!-- D3.JS IMPLEMENTATION -->
   <script type="module">
     var pops = {{ pops | tojson }};
-    var state_total_infected = {};
-    var total_infected = 0;
+    var state_dots = {};
     var isInitial = true;
     var running = false;
     var updates;
@@ -315,19 +314,18 @@
       const data = await fetchData();
       await fetchPageSource();
 
-      console.log('aa');
       if (data != 'end') {
-        console.log('i here');
         if (!isInitial) {
           data.forEach(d => {
-            if (d.infected > 0) {
-              if (createDot(d.state, d.infected)) {
-                let point = mapElem.createPoint(d.state);
-                if (point) {
-                  mapData.push(Object.assign(point,
-                    { date: new Date(d.date) }
-                  ));
-                }
+            if (createDot(d.state, d.infected)) {
+              let point = mapElem.createPoint(d.state);
+              if (point) {
+                mapData.push(Object.assign(point,
+                  { date: new Date(d.date) }
+                ));
+
+                if (d.state in state_dots) state_dots[d.state] = state_dots[d.state] + 1;
+                else state_dots[d.state] = 1;
               }
             }
 
@@ -337,20 +335,17 @@
             ));
           });
         } else {
-          console.log('iaa here');
           data.forEach(d => {
-            console.log('a');
             if (d.infected > 0) {
-              console.log('b');
-              createDot(d.state, d.infected);
               let point = mapElem.createPoint(d.state);
-              console.log('c');
               if (point) {
                 mapData.push(Object.assign(point,
                   { date: new Date(d.date) }
                 ));
+
+                if (d.state in state_dots) state_dots[d.state] = state_dots[d.state] + 1;
+                else state_dots[d.state] = 1;
               }
-              console.log('d');
             }
 
             areaData.push(Object.assign({ date: new Date(d.date) },
@@ -358,7 +353,6 @@
               { infected: d.infected }
             ));
           });
-          console.log('i finished');
           isInitial = false;
         };
 
@@ -390,18 +384,13 @@
 
       console.log({ state, idx, pop, infected });
 
+      // like change to be every ~1% of population density
       if (!pop) return false;
-      if (state in state_total_infected) {
-        let change = infected - state_total_infected[state];
-        state_total_infected[state] = infected;
 
-        return (change / pops[STATE_NAMES.indexOf(state)] >= 0.005)
-      } else {
-        state_total_infected[state] = infected;
-        console.log('i got here');
+      let percent_infected = infected/pop;
+      let number_of_dots = Math.round(percent_infected/0.01);
 
-        return (infected / pops[STATE_NAMES.indexOf(state)] >= 0.005)
-      }
+      return (number_of_dots > state_dots[state])
     };
 
     document.getElementById('but1').addEventListener("click", () => {
