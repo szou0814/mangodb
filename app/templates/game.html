@@ -294,9 +294,14 @@
       });
 
       console.log(response);
-      const data = await response.json();
-      console.log(data);
-      return data;
+      var data;
+      try {
+        data = await response.json();
+      } catch {
+        data = 'end';
+      } finally {
+        return data;
+      }
     }
 
     async function fetchPageSource() {
@@ -368,6 +373,7 @@
         document.getElementById('stat-date').textContent = data[0].date;
       } else {
         clearInterval(updates);
+        document.getElementById('util').removeChild(document.getElementById('but1'));
       }
     };
 
@@ -393,15 +399,22 @@
     };
 
     document.getElementById('but1').addEventListener("click", () => {
-      updateGraphs();
       if (!running) {
+          updateGraphs();
           updates = setInterval(() => {
             console.log('ran');
             updateGraphs()
-          }, 1000);
+          }, 500);
+
+          document.getElementById('but1').innerHTML = 'Pause Simulation';
           running = true;
+        } else {
+          clearInterval(updates);
+
+          document.getElementById('but1').innerHTML = 'Start Simulation';
+          running = false;
         }
-    })
+    });
   </script>
 
 </body>
