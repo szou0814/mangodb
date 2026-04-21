@@ -5,13 +5,21 @@ import os
 import datetime
 import sys
 import random
-import datetime
 import build_db as db
 import logic as logic
 
 app = Flask(__name__)
 app.secret_key = 'hi'
 DB_FILE="database.db"
+
+STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY",
+          "LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND",
+          "OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"]
+STATE_NAMES = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho",
+    "Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri",
+    "Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon",
+    "Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia",
+    "Wisconsin","Wyoming"]
 cache = {}
 
 @app.route("/", methods=["GET", "POST"])
@@ -75,75 +83,75 @@ def state_stats():
 
 @app.route("/game", methods=["GET", "POST"])
 def game():
-    global cache;
-    STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY",
-              "LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND",
-              "OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"]
-    STATE_NAMES = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho",
-        "Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri",
-        "Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon",
-        "Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia",
-        "Wisconsin","Wyoming"]
-
     if "user_id" not in session:
         return redirect(url_for("login"))
     if request.method == "POST":
         reqs = request.headers
 
-        if 'data' in reqs and 'data' in cache:
-            data = cache['data']
+        if 'data' in reqs and cache.get('sim') is not None:
+            sim = cache['sim']
+            df = sim.tick()
+            newData = addToDict(df, session['ticks'])
+            session['ticks'] = session['ticks'] + 1
 
-            if reqs['data'] != 'start':
-                prevData = loads(reqs['data'])
-
-                i = data.index(prevData[0])
-                i += len(STATES)
-                if i > len(data):
-                    return 'end'
-            else:
-                print('i got here!')
-                i = 0
-
-            print(data[i:len(STATES)+i])
-            return jsonify(data[i:len(STATES)+i])
+            print(newData)
+            return jsonify(newData)
 
         if 'state_name' not in session or session["state_name"] != request.form.get("state_name"):
-            session["state_name"] = STATES[STATE_NAMES.index(request.form.get("state_name"))]
+            if cache.get('sim') is not None:
+                cache.pop('sim')
 
-    if cache.get('data') is None:
+            session["state_name"] = STATES[STATE_NAMES.index(request.form.get("state_name"))]
+            session['ticks'] = 0
+
+    if cache.get('sim') is None:
         map_adj = logic.get_adjacency()
         sim = logic.Simulation(session['state_name'], map_adj)
+        cache['sim'] = sim
+        # # Tick the simulation
+        # print("tickin")
+        # for _ in range(152):
+        #     df = sim.tick()
+        #     if sim.pending_prompts:
+        #         for prompt in sim.pending_prompts:
+        #             print(f"Prompt: {prompt['prompt']['question']}")
+        #         sim.pending_prompts.clear()
+        # print("done tickin")
+        # data = []
+        # infected_cols = [c for c in df.columns if str(c).endswith("_infected")]
+        # print("data thing")
+        # for col in infected_cols:
+        #     for state in STATES:
+        #         state_name = STATE_NAMES[STATES.index(state)]
+        #         date_str = str(col)[:10]
+        #         infected = df.loc[state, col]
+        #         data.append({
+        #             'state': state_name,
+        #             'date': date_str,
+        #             'infected': float(infected),
+        #         })
+        # print("done data thing")
+        # cache['data'] = data
 
-        # Tick the simulation
-        print("tickin")
-        for _ in range(152):
-            df = sim.tick()
-            if sim.pending_prompts:
-                for prompt in sim.pending_prompts:
-                    print(f"Prompt: {prompt['prompt']['question']}")
-                sim.pending_prompts.clear()
-        print("done tickin")
-        data = []
-        infected_cols = [c for c in df.columns if str(c).endswith("_infected")]
-        print("data thing")
-        for col in infected_cols:
-            for state in STATES:
-                state_name = STATE_NAMES[STATES.index(state)]
-                date_str = str(col)[:10]
-                infected = df.loc[state, col]
-                data.append({
-                    'state': state_name,
-                    'date': date_str,
-                    'infected': float(infected),
-                })
-        print("done data thing")
-        cache['data'] = data
-
-    populations = []
-    for state in STATE_NAMES:
-        populations.append(db.get_statestats(state)[1])
+    populations = db.get_populations()
 
     return render_template("game.html", state_name=session.get("state_name", ""), pops=populations)
+
+def addToDict(df, tick):
+    data = []
+    infected_cols = [c for c in df.columns[tick:] if str(c).endswith("_infected")]
+    for col in infected_cols:
+        for state in STATES:
+            state_name = STATE_NAMES[STATES.index(state)]
+            date_str = str(col)[:10]
+            infected = df.loc[state, col]
+            data.append({
+                'state': state_name,
+                'date': date_str,
+                'infected': float(infected),
+            })
+
+    return data
 
 if __name__ == "__main__":
     app.debug = True

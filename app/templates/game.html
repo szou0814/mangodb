@@ -181,11 +181,11 @@
 
   <!-- D3.JS IMPLEMENTATION -->
   <script type="module">
-    var currData;
     var pops = {{ pops | tojson }};
     var state_total_infected = {};
     var total_infected = 0;
     var isInitial = true;
+    var running = false;
 
     const STATE_NAMES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
       "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri",
@@ -216,8 +216,8 @@
     }
 
     async function generateGraphs() {
-      generateMap();
-      generateStackedLine();
+      await generateMap();
+      await generateStackedLine();
     }
 
     await generateGraphs();
@@ -227,15 +227,14 @@
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "data": currData ? JSON.stringify(currData) : "start"
+          "data": isInitial ? 'a' : "start"
         }
       });
 
       console.log(response);
-      const data = JSON.parse(response);
+      const data = await response.json();
       console.log(data);
-      currData = data;
-      return currData;
+      return data;
     }
 
     async function fetchPageSource() {
@@ -277,14 +276,15 @@
               console.log('b');
               createDot(d.state, d.infected);
               let point = mapElem.createPoint(d.state);
-
+              console.log('c');
               mapData.push(Object.assign(point,
                 { date: new Date(d.date) }
               ));
+              console.log('d');
             }
 
-            let prevDate = new Date(d.date);
-            prevDate.setDate(prevDate.getDate() - 1);
+            // let prevDate = new Date(d.date);
+            // prevDate.setDate(prevDate.getDate() - 1);
 
             // areaData.push(Object.assign({ date: prevDate },
             //   { state: d.state },
@@ -295,9 +295,12 @@
               { infected: d.infected }
             ));
           });
+          console.log('i finished');
           isInitial = false;
         };
 
+        console.log("stackedLineElem =", window.stackedLineElem);
+        console.log("mapElem =", window.stackedLineElem);
         mapElem.update(new Date(data[0].date));
         stackedLineElem.update(new Date(data[0].date));
       };
@@ -317,17 +320,20 @@
         return (change / pops[STATE_NAMES.indexOf(state)] >= 0.005)
       } else {
         state_total_infected[state] = infected;
-
+        console.log('i got here');
         return (infected / pops[STATE_NAMES.indexOf(state)] >= 0.005)
       }
     };
 
     document.getElementById('but1').addEventListener("click", () => {
       updateGraphs();
-      // let updates = setInterval(() => {
-      //   console.log('ran');
-      //   updateGraphs()
-      // }, 1000);
+      if (!running) {
+          let updates = setInterval(() => {
+            console.log('ran');
+            updateGraphs()
+          }, 2000);
+          running = true;
+        }
     })
   </script>
 

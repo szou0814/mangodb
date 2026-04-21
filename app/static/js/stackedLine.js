@@ -111,47 +111,61 @@ function StackedAreaChart(data, {
 
   return Object.assign(svg.node(), {
     update(date) {
+      console.log(areaData);
       X = d3.map(areaData, x);
       Y = d3.map(areaData, y);
       Z = d3.map(areaData, z);
 
       xDomain = d3.extent(X);
-      zDomain = new d3.InternSet(Z);
+      zDomain = Z;
+      zDomain = new d3.InternSet(zDomain);
 
       I = d3.range(X.length).filter(i => zDomain.has(Z[i]));
 
       series = d3.stack()
-        .keys(zDomain)
-        .value(([x, I], z) => Y[I.get(z)])
-        .order(order)
-        .offset(offset)
-        (
-          d3.rollup(I, ([i]) => i, i => X[i], i => Z[i])
-        )
-        .map(s =>
-          s.map(d =>
-            Object.assign(d, { i: d.data[1].get(s.key) })
-          )
-        );
+          .keys(zDomain)
+          .value(([x, I], z) => Y[I.get(z)])
+          .order(order)
+          .offset(offset)
+        (d3.rollup(I, ([i]) => i, i => X[i], i => Z[i]))
+        .map(s => s.map(d => Object.assign(d, {i: d.data[1].get(s.key)})));
 
-      // scales
-      xScale = xType(xDomain, xRange);
-      color = d3.scaleOrdinal(zDomain, colors);
+        xScale = xType(xDomain, xRange);
+        area = d3.area()
+            .x(({i}) => xScale(X[i]))
+            .y0(([y1]) => yScale(y1))
+            .y1(([, y2]) => yScale(y2));
 
-      xAxis = d3.axisBottom(xScale).ticks(width / 80, xFormat).tickSizeOuter(0);
+        color = d3.scaleOrdinal(zDomain, colors);
 
-      xAxisGroup
-        .transition()
-        .call(xAxis);
+        xAxis = d3.axisBottom(xScale).ticks(width / 80, xFormat).tickSizeOuter(0);
 
-      areaGroup = areaGroup
-        .selectAll("path")
-        .data(series)
-        .join("path")
-          .attr("fill", d => color(d.key))
-          .attr("d", area);
+        xAxisGroup.remove();
+        areaGroup.remove();
+
+        areaGroup = svg.append("g")
+          .selectAll("path")
+          .data(series)
+          .join("path")
+            .attr("fill", ([{i}]) => color(Z[i]))
+            .attr("d", area);
+
+        areaGroup.append("title")
+            .text(([{i}]) => Z[i]);
+
+        if (areaGroup.size() !== 0) {
+          xAxisGroup = svg.append("g")
+              .attr("transform", `translate(0,${height - marginBottom})`)
+              .call(xAxis);
+        } else {
+          xAxis = d3.axisBottom(xScale).ticks(0);
+          xAxisGroup = svg.append("g")
+              .attr("transform", `translate(0,${height - marginBottom})`)
+              .call(xAxis);
+        }
       }
-  });
+    }
+  );
 }
 
 export var areaData = []

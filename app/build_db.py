@@ -123,6 +123,14 @@ def get_statestats(state_id):
     db.close()
     return result
 
+def get_populations():
+    db = sqlite3.connect(DB_FILE)
+    c = db.cursor()
+    c.execute("SELECT population FROM STATES")
+    result = [state[0] for state in c.fetchall()]
+    db.close()
+    return result
+
 def get_initstringency(state_id):
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
