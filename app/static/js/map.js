@@ -36,22 +36,12 @@ export async function map() {
     const id = states.find(i => i.name === state_id).id;
     const feature = stateFeatures.find(d => d.id === id);
     let point;
-
-    // pretty sure this breaks everything
-    // while (true) {
-    //   //d3.geoBounds gives like a box surrounding the state
-    //   const bounds = d3.geoBounds(feature);
-    //   const x = bounds[0][0] + Math.random() * (bounds[1][0] - bounds[0][0]);
-    //   const y = bounds[0][1] + Math.random() * (bounds[1][1] - bounds[0][1]);
-
-    //   point = [x,y];
-    //   //so dis is to check if its actually in the state
-    //   if (d3.geoContains(feature, [x,y])) {
-    //     break;
-    //   }
-    // }
-
-    return d3.geoPath().centroid(feature);
+    const path = d3.geoPath();
+    const [[x0, y0], [x1, y1]] = path.bounds(feature);
+    const [cx, cy] = path.centroid(feature);
+    const jx = (x1 - x0) * 0.3;
+    const jy = (y1 - y0) * 0.3;
+    return [cx + (Math.random() * 2 - 1) * jx, cy + (Math.random() * 2 - 1) * jy];
   }
 
   us.objects.states = { // pulls the geometries of each state for later use
