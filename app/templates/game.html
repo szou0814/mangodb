@@ -317,15 +317,11 @@
       if (data != 'end') {
         if (!isInitial) {
           data.forEach(d => {
-            if (createDot(d.state, d.infected)) {
+            const dotsToAdd = createDot(d.state, d.infected);
+            for (let i = 0; i < dotsToAdd; i++) {
               let point = mapElem.createPoint(d.state);
               if (point) {
-                mapData.push(Object.assign(point,
-                  { date: new Date(d.date) }
-                ));
-
-                if (d.state in state_dots) state_dots[d.state] = state_dots[d.state] + 1;
-                else state_dots[d.state] = 1;
+                mapData.push(Object.assign(point, { date: new Date(d.date) }));
               }
             }
 
@@ -382,15 +378,18 @@
       const idx = STATE_NAMES.indexOf(state);
       const pop = pops[idx];
 
-      console.log({ state, idx, pop, infected });
+      if (!pop || infected <= 0) return 0;
 
-      // like change to be every ~1% of population density
-      if (!pop) return false;
+      const current = state_dots[state] ?? 0;
+      // 1 dot per 0.1% of population
+      const target = current === 0 ? 1 : Math.round((infected / pop) / 0.001);
 
-      let percent_infected = infected/pop;
-      let number_of_dots = Math.round(percent_infected/0.01);
+      if (target <= current) return 0;
 
-      return (number_of_dots > state_dots[state] ?? 0);
+      // cap at 10 per tick so fast-growing states don't flood the map at once
+      const toAdd = Math.min(target - current, 10);
+      state_dots[state] = current + toAdd;
+      return toAdd;
     };
 
     document.getElementById('but1').addEventListener("click", () => {
