@@ -7,6 +7,7 @@ import sys
 import random
 import build_db as db
 import logic as logic
+from model import get_models
 
 app = Flask(__name__)
 app.secret_key = 'hi'
@@ -107,8 +108,9 @@ def game():
             session['ticks'] = 0
 
     if cache.get('sim') is None:
+        models = get_models();
         map_adj = logic.get_adjacency()
-        sim = logic.Simulation(session['state_name'], map_adj)
+        sim = logic.Simulation(session['state_name'], map_adj, models)
         cache['sim'] = sim
         # # Tick the simulation
         # print("tickin")
