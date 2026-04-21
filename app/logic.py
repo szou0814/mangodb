@@ -101,7 +101,7 @@ class Simulation:
         self.vulnerability_index = []
         self.population_density = []
         self.stringency_index = []
-
+        self.load_state_info(start_state)
         self.pop[f"{self.start_date}_population"] = [self.get_initial_population(state) for state in self.pop.index]
         self.select_state(start_state, self.start_date)
 
@@ -261,4 +261,4 @@ if __name__ == "__main__":
     sim = Simulation("NY", adj_map, covid_models=models)
     for _ in range(152):
         final_df = sim.tick()
-        print(final_df.iloc[:, -3:].tail())
+        print(final_df.iloc[:, -3:])

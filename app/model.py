@@ -132,10 +132,12 @@ class CovidModels:
         return max(0, output)
 
     def predict_new_infections(self, population, density, current_infected, vulnerability, stringency):
-        return self._predict(self.inf_model, self.inf_stats, population, density, current_infected, vulnerability, stringency)
+        pred = self._predict(self.inf_model, self.inf_stats, population, density, current_infected, vulnerability, stringency)
+        return max(float(current_infected) * 0.05, pred)
 
     def predict_deaths(self, population, density, current_infected, vulnerability, stringency):
-        return self._predict(self.death_model, self.death_stats, population, density, current_infected, vulnerability, stringency)
+        pred = self._predict(self.death_model, self.death_stats, population, density, current_infected, vulnerability, stringency)
+        return max(float(current_infected) * 0.0015, pred)
 
 def get_models():
     models = CovidModels()
