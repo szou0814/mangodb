@@ -32,16 +32,29 @@ export async function map() {
   //MUST HAVE THIS SO DO NOT CHANGE (unless u find bug ofc hehe)
   const projection = d3.geoAlbers().fitSize([960, 600], topojson.feature(us, us.objects.states));
 
+
+  // off-screen canvas for pixel-space point-in-polygon testing
+  const hitCanvas = document.createElement('canvas');
+  hitCanvas.width = 960;
+  hitCanvas.height = 600;
+  const hitCtx = hitCanvas.getContext('2d');
+  const hitPath = d3.geoPath().context(hitCtx);
+
   function createPoint(state_id) {
     const id = states.find(i => i.name === state_id).id;
     const feature = stateFeatures.find(d => d.id === id);
-    let point;
     const path = d3.geoPath();
     const [[x0, y0], [x1, y1]] = path.bounds(feature);
-    const [cx, cy] = path.centroid(feature);
-    const jx = (x1 - x0) * 0.3;
-    const jy = (y1 - y0) * 0.3;
-    return [cx + (Math.random() * 2 - 1) * jx, cy + (Math.random() * 2 - 1) * jy];
+    
+    hitCtx.beginPath();
+    hitPath(feature);
+
+    for (let i = 0; i < 100; i++) {
+      const x = x0 + Math.random() * (x1 - x0);
+      const y = y0 + Math.random() * (y1 - y0);
+      if (hitCtx.isPointInPath(x, y)) return [x, y];
+    }
+    return path.centroid(feature);
   }
 
   us.objects.states = { // pulls the geometries of each state for later use
