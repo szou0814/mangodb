@@ -91,15 +91,18 @@ export async function map() {
 
   return Object.assign(svg.node(), {
     update(date) {
-      g.selectAll("circle")
-        .data(mapData)
-        .join("circle")
-        .attr("transform", d => `translate(${d[0]},${d[1]})`)
-        .attr("r", 3);
+      const circles = g.selectAll("circle")
+        .data(mapData);
 
-      dot // enters the dots and does the little animation
+      circles
+        .enter()
         .filter(d => d.date > previousDate && d.date <= date)
-        .transition().attr("r", 3);
+        .append("circle")
+        .attr("r", 0)
+        .attr("transform", d => `translate(${d[0]},${d[1]})`)
+        .merge(circles)
+        .transition()
+        .attr("r", 3);
 
       previousDate = date;
     },
