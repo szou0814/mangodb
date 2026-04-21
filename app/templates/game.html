@@ -148,28 +148,28 @@
       <div class="flex gap-8">
         <div class="stats-item">
           <span class="stats-label">Current State</span>
-          <span class="stats-value"><strong></strong></span>
+          <span class="stats-value"><strong id="stat-state"></strong></span>
         </div>
         <div class="stats-item">
           <span class="stats-label">Total Infected</span>
-          <span class="stats-value"><strong></strong></span>
+          <span class="stats-value"><strong id="stat-infected"></strong></span>
         </div>
         <div class="stats-item">
           <span class="stats-label">Total Deaths</span>
-          <span class="stats-value"><strong></strong></span>
+          <span class="stats-value"><strong id="stat-deaths"></strong></span>
         </div>
         <div class="stats-item">
           <span class="stats-label">Stringency Index</span>
-          <span class="stats-value"><strong></strong></span>
+          <span class="stats-value"><strong id="stat-stringency"></strong></span>
         </div>
         <div class="stats-item">
           <span class="stats-label">Social Vulnerability</span>
-          <span class="stats-value"><strong></strong></span>
+          <span class="stats-value"><strong id="stat-vulnerability"></strong></span>
         </div>
       </div>
       <div class="stats-item text-right">
         <span class="stats-label">Simulation Date</span>
-        <span class="stats-value text-lg"><strong></strong></span>
+        <span class="stats-value text-lg"><strong id="stat-date"></strong></span>
       </div>
     </div>
   </div>
@@ -358,9 +358,14 @@
         };
 
         console.log("stackedLineElem =", window.stackedLineElem);
-        console.log("mapElem =", window.stackedLineElem);
+        console.log("mapElem =", window.mapElem);
         mapElem.update(new Date(data[0].date));
         stackedLineElem.update(new Date(data[0].date));
+
+        const totalInfected = data.reduce((sum, d) => sum + d.infected, 0);
+        document.getElementById('stat-state').textContent = "{{ state_name }}";
+        document.getElementById('stat-infected').textContent = Math.round(totalInfected).toLocaleString();
+        document.getElementById('stat-date').textContent = data[0].date;
       } else {
         clearInterval(updates);
       }
