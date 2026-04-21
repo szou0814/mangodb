@@ -361,8 +361,8 @@
 
         const totalInfected = data.reduce((sum, d) => sum + d.infected, 0);
 
-        const currentPopulation = data.reduce((sum, d) => sum + d.population, 0);
-        const totalOriginalPopulation = data.reduce((sum, d) => sum + d, 0);
+        const currentPopulation = data.reduce((sum, d) => sum + d.currPopulation, 0);
+        const totalOriginalPopulation = data.reduce((sum, d) => sum + (pops[STATE_NAMES.indexOf(d.state)] || 0), 0);
         const totalDeaths = totalOriginalPopulation - currentPopulation;
         console.log(currentPopulation);
         console.log(totalOriginalPopulation);
@@ -390,7 +390,7 @@
       let percent_infected = infected/pop;
       let number_of_dots = Math.round(percent_infected/0.01);
 
-      return (number_of_dots > state_dots[state])
+      return (number_of_dots > state_dots[state] ?? 0);
     };
 
     document.getElementById('but1').addEventListener("click", () => {
