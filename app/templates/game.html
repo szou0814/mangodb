@@ -362,14 +362,21 @@
           isInitial = false;
         };
 
-        console.log("stackedLineElem =", window.stackedLineElem);
-        console.log("mapElem =", window.mapElem);
         mapElem.update(new Date(data[0].date));
         stackedLineElem.update(new Date(data[0].date));
 
         const totalInfected = data.reduce((sum, d) => sum + d.infected, 0);
+
+        const currentPopulation = data.reduce((sum, d) => sum + d.population, 0);
+        const totalOriginalPopulation = data.reduce((sum, d) => sum + d, 0);
+        const totalDeaths = totalOriginalPopulation - currentPopulation;
+        console.log(currentPopulation);
+        console.log(totalOriginalPopulation);
+        console.log(totalDeaths);
+
         document.getElementById('stat-state').textContent = "{{ state_name }}";
         document.getElementById('stat-infected').textContent = Math.round(totalInfected).toLocaleString();
+        document.getElementById('stat-deaths').textContent = Math.round(totalDeaths).toLocaleString();
         document.getElementById('stat-date').textContent = data[0].date;
       } else {
         clearInterval(updates);
@@ -388,13 +395,12 @@
         let change = infected - state_total_infected[state];
         state_total_infected[state] = infected;
 
-        return true;
-        // return (change / pops[STATE_NAMES.indexOf(state)] >= 0.005)
+        return (change / pops[STATE_NAMES.indexOf(state)] >= 0.005)
       } else {
         state_total_infected[state] = infected;
         console.log('i got here');
-        return true;
-        // return (infected / pops[STATE_NAMES.indexOf(state)] >= 0.005)
+
+        return (infected / pops[STATE_NAMES.indexOf(state)] >= 0.005)
       }
     };
 

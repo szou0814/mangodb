@@ -96,7 +96,7 @@ def game():
 
             if session['ticks'] > 156:
                 return 'end'
-                
+
             return jsonify(newData)
 
         if 'state_name' not in session or session["state_name"] != request.form.get("state_name"):
@@ -147,11 +147,14 @@ def addToDict(df, tick):
             state_name = STATE_NAMES[STATES.index(state)]
             date_str = str(col)[:10]
             infected = df.loc[state, col]
+            population = df.loc[state, col.replace("_infected", '') + "_population"]
             data.append({
                 'state': state_name,
                 'date': date_str,
                 'infected': float(infected),
+                'currPopulation': float(population)
             })
+
 
     return data
 
