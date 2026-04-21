@@ -32,7 +32,6 @@ export async function map() {
   //MUST HAVE THIS SO DO NOT CHANGE (unless u find bug ofc hehe)
   const projection = d3.geoAlbers().fitSize([960, 600], topojson.feature(us, us.objects.states));
 
-
   // off-screen canvas for pixel-space point-in-polygon testing
   const hitCanvas = document.createElement('canvas');
   hitCanvas.width = 960;
@@ -45,15 +44,28 @@ export async function map() {
     const feature = stateFeatures.find(d => d.id === id);
     const path = d3.geoPath();
     const [[x0, y0], [x1, y1]] = path.bounds(feature);
-    
+
     hitCtx.beginPath();
     hitPath(feature);
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 200; i++) {
       const x = x0 + Math.random() * (x1 - x0);
       const y = y0 + Math.random() * (y1 - y0);
       if (hitCtx.isPointInPath(x, y)) return [x, y];
     }
+
+    // Fallback: scan on a grid to find any valid pixel inside the state
+    const steps = 20;
+    const dx = (x1 - x0) / steps;
+    const dy = (y1 - y0) / steps;
+    for (let xi = 0; xi <= steps; xi++) {
+      for (let yi = 0; yi <= steps; yi++) {
+        const x = x0 + xi * dx;
+        const y = y0 + yi * dy;
+        if (hitCtx.isPointInPath(x, y)) return [x, y];
+      }
+    }
+
     return path.centroid(feature);
   }
 
@@ -80,24 +92,21 @@ export async function map() {
       .attr("stroke-linejoin", "round")
       .attr("d", d3.geoPath());
 
-  // creates a container that will group the dots that aren't the main blue dot
+  // infected dots (black outline)
   const g = svg.append("g")
-      .attr("fill", "none") // sets the fill of these dots
-      .attr("stroke", "black"); // sets the outline of these dots
+      .attr("fill", "none")
+      .attr("stroke", "black");
 
-  const dot = g.selectAll("circle") // selects all cuurent and new circle elements inside g
-    .data(mapData) // binds this to data array
-    .join("circle") // binds and creates a circle DOM element to each new data point
-      .attr("transform", d => `translate(${d})`); // transforms and translates each dot to their [x,y] coordinate
-        // the d essentially just comes from data and is whatever object thing that was appended there
+  // death dots (solid red)
+  const gDeaths = svg.append("g")
+      .attr("fill", "rgba(200, 0, 0, 0.75)")
+      .attr("stroke", "none");
 
   let previousDate = -Infinity;
 
   return Object.assign(svg.node(), {
     update(date) {
-      const circles = g.selectAll("circle")
-        .data(mapData);
-
+      const circles = g.selectAll("circle").data(mapData);
       circles
         .enter()
         .filter(d => d.date > previousDate && d.date <= date)
@@ -108,6 +117,17 @@ export async function map() {
         .transition()
         .attr("r", 3);
 
+      const deathCircles = gDeaths.selectAll("circle").data(deathMapData);
+      deathCircles
+        .enter()
+        .filter(d => d.date > previousDate && d.date <= date)
+        .append("circle")
+        .attr("r", 0)
+        .attr("transform", d => `translate(${d[0]},${d[1]})`)
+        .merge(deathCircles)
+        .transition()
+        .attr("r", 3);
+
       previousDate = date;
     },
     createPoint
@@ -115,3 +135,4 @@ export async function map() {
 }
 
 export const mapData = []
+export const deathMapData = []
