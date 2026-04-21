@@ -29,11 +29,27 @@
     }
 
     #but1 {
-      background-color: rgba(180, 0, 0, 0.6);
-      padding: 4px;
-      border-width: 1px;
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.8) 0%, rgba(180, 0, 0, 0.8) 100%);
+      padding: 12px 24px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       margin-left: 20px;
-      font-size: 150%;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: white;
+      box-shadow: 0 4px 15px rgba(180, 0, 0, 0.3);
+    }
+
+    #but1:hover {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.9) 0%, rgba(200, 0, 0, 0.9) 100%);
+      box-shadow: 0 6px 25px rgba(180, 0, 0, 0.5);
+      transform: translateY(-2px);
+    }
+
+    #but1:active {
+      transform: translateY(0);
     }
 
     input[type="range"]::-webkit-slider-thumb {
@@ -46,6 +62,13 @@
 
       display: flex;
       flex-direction: column;
+    }
+
+    #util {
+      padding: 16px 32px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
     }
 
     #graphs {
@@ -78,6 +101,26 @@
       align-items: center;
       justify-content: center;
     }
+
+    .stats-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stats-label {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .stats-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fca5a5;
+    }
   </style>
 
 </head>
@@ -100,28 +143,46 @@
     </form>
   </nav>
 
-  <div class="flex justify-between items-center px-4 py-2 border-b bg-red-900 mb-4">
-    <div class="flex gap-6 text-sm">
-      <span>State: <strong></strong></span>
-      <span>Total Infected: <strong></strong></span>
-      <span>Total Dead: <strong></strong></span>
-      <span>Stringency Index: <strong></strong></span>
-      <span>Social Vulnerability Index: <strong></strong></span>
-    </div>
-    <div class="text-sm">
-      Date: <strong></strong>
+  <div class="border-b bg-gradient-to-r from-red-950/40 to-red-900/20 backdrop-blur-sm px-8 py-4 border-red-800/30">
+    <div class="flex justify-between items-start gap-8">
+      <div class="flex gap-8">
+        <div class="stats-item">
+          <span class="stats-label">Current State</span>
+          <span class="stats-value"><strong></strong></span>
+        </div>
+        <div class="stats-item">
+          <span class="stats-label">Total Infected</span>
+          <span class="stats-value"><strong></strong></span>
+        </div>
+        <div class="stats-item">
+          <span class="stats-label">Total Deaths</span>
+          <span class="stats-value"><strong></strong></span>
+        </div>
+        <div class="stats-item">
+          <span class="stats-label">Stringency Index</span>
+          <span class="stats-value"><strong></strong></span>
+        </div>
+        <div class="stats-item">
+          <span class="stats-label">Social Vulnerability</span>
+          <span class="stats-value"><strong></strong></span>
+        </div>
+      </div>
+      <div class="stats-item text-right">
+        <span class="stats-label">Simulation Date</span>
+        <span class="stats-value text-lg"><strong></strong></span>
+      </div>
     </div>
   </div>
 
   <div id="mainCont">
     <!-- UTIL -->
     <div id="util">
-      <button id="but1">Play Simulation</button>
+      <button id="but1">Start Simulation</button>
     </div>
 
     <!-- GRAPHS -->
-    <div style="padding: 36px 5% 32px;" class="flex gap-5 items-start">
-      <div class="flex-1 bg-black/45 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md">
+    <div style="padding: 24px 5% 32px;" class="flex gap-5 items-start flex-1">
+      <div class="flex-1 bg-gradient-to-br from-black/50 to-black/30 border border-white/[0.1] rounded-2xl p-6 backdrop-blur-lg shadow-2xl">
         <div id="graphs">
 
           <div id="map"></div>
@@ -257,10 +318,11 @@
             if (d.infected > 0) {
               if (createDot(d.state, d.infected)) {
                 let point = mapElem.createPoint(d.state);
-
-                mapData.push(Object.assign(point,
-                  { date: new Date(d.date) }
-                ));
+                if (point) {
+                  mapData.push(Object.assign(point,
+                    { date: new Date(d.date) }
+                  ));
+                }
               }
             }
 
@@ -278,9 +340,11 @@
               createDot(d.state, d.infected);
               let point = mapElem.createPoint(d.state);
               console.log('c');
-              mapData.push(Object.assign(point,
-                { date: new Date(d.date) }
-              ));
+              if (point) {
+                mapData.push(Object.assign(point,
+                  { date: new Date(d.date) }
+                ));
+              }
               console.log('d');
             }
 
