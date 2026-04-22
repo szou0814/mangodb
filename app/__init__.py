@@ -89,10 +89,11 @@ def game():
     if request.method == "POST":
         reqs = request.headers
 
-        if 'choice' in reqs and cache.get('sim') is not None:
+        if reqs.get('action') == 'choice' and cache.get('sim') is not None:
             sim = cache['sim']
-            prompt_key = reqs.get('prompt_key')
-            choice_key = reqs.get('choice')
+            body = request.get_json()
+            prompt_key = body.get('promptKey')
+            choice_key = body.get('choice')
             newStringency, newSvi, failed, msg = logic.handle_choice(prompt_key, choice_key, sim.curr_stringency, sim.curr_svi, sim.seen_prompts)
             sim.curr_stringency = newStringency
             sim.curr_svi = newSvi

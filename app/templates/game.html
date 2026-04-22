@@ -279,7 +279,8 @@
       const promptKey = document.getElementById('modal').dataset.promptKey;
       await fetch(window.location.href, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'choice': choice, 'prompt_key': promptKey }
+        headers: { 'Content-Type': 'application/json', 'action': 'choice' },
+        body: JSON.stringify({ choice: choice, promptKey: promptKey })
       });
       hideModal();
       if (window.resumeSimulation) window.resumeSimulation();
