@@ -97,6 +97,10 @@ def game():
 
             if session['ticks'] > 156:
                 return 'end'
+            
+            for item in newData:
+                 item['stringency'] = sim.curr_stringency
+                 item['svi'] = sim.curr_svi
 
             return jsonify(newData)
 

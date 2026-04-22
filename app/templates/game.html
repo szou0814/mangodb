@@ -244,6 +244,8 @@
   <script type="module">
     var pops = {{ pops | tojson }};
     var state_dots = {};
+    var state_death_dots = {};
+    var initial_population = {};
     var isInitial = true;
     var running = false;
     var updates;
@@ -254,7 +256,7 @@
       "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
       "Wisconsin", "Wyoming"];
 
-    import { map, mapData } from "/static/js/map.js";
+    import { map, mapData, deathMapData } from "/static/js/map.js";
     import { stackedLine, areaData } from "/static/js/stackedLine.js";
     import { Scrubber } from "/static/js/mbostockScrubber.js";
     import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
@@ -325,6 +327,15 @@
               }
             }
 
+            const deaths = (initial_population[d.state] || 0) - d.currPopulation;
+            const deathDotsToAdd = createDeathDot(d.state, deaths);
+            for (let i = 0; i < deathDotsToAdd; i++) {
+              let point = mapElem.createPoint(d.state);
+              if (point) {
+                deathMapData.push(Object.assign(point, { date: new Date(d.date) }));
+              }
+            }
+
             areaData.push(Object.assign({ date: new Date(d.date) },
               { state: d.state },
               { infected: d.infected }
@@ -332,6 +343,11 @@
           });
         } else {
           data.forEach(d => {
+            // record the simulations starting population for each state
+            if (!(d.state in initial_population)) {
+              initial_population[d.state] = d.currPopulation;
+            }
+
             if (d.infected > 0) {
               let point = mapElem.createPoint(d.state);
               if (point) {
@@ -368,6 +384,8 @@
         document.getElementById('stat-infected').textContent = Math.round(totalInfected).toLocaleString();
         document.getElementById('stat-deaths').textContent = Math.round(totalDeaths).toLocaleString();
         document.getElementById('stat-date').textContent = data[0].date;
+        document.getElementById('stat-stringency').textContent = data[0].stringency.toFixed(1);
+        document.getElementById('stat-vulnerability').textContent = data[0].svi.toFixed(3);
       } else {
         clearInterval(updates);
         document.getElementById('util').removeChild(document.getElementById('but1'));
@@ -387,8 +405,27 @@
       if (target <= current) return 0;
 
       // cap at 10 per tick so fast-growing states don't flood the map at once
-      const toAdd = Math.min(target - current, 10);
+      const toAdd = Math.min(target - current, 10, 50 - current);
+      if (toAdd <= 0) return 0;
       state_dots[state] = current + toAdd;
+      return toAdd;
+    };
+
+    function createDeathDot(state, deaths) {
+      const pop = initial_population[state];
+
+      if (!pop || deaths <= 0) return 0;
+
+      const current = state_death_dots[state] ?? 0;
+      const target = Math.round((deaths / pop) / 0.001);
+
+      if (target <= current) return 0;
+
+      // death dots can never outnumber infection dots for the same state
+      const infectionDots = state_dots[state] ?? 0;
+      const toAdd = Math.min(target - current, 10, 50 - current, infectionDots - current);
+      if (toAdd <= 0) return 0;
+      state_death_dots[state] = current + toAdd;
       return toAdd;
     };
 
