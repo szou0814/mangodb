@@ -94,8 +94,7 @@ export async function map() {
 
   // infected dots (black outline)
   const g = svg.append("g")
-      .attr("fill", "none")
-      .attr("stroke", "black");
+      .attr("fill", "rgba(0, 0, 0, 0.5)")
 
   // death dots (solid red)
   const gDeaths = svg.append("g")
