@@ -137,7 +137,7 @@ function StackedAreaChart(data, {
   legend
     .append("text")
     .attr("x", function(d,i) { return (marginLeft-60) + ((size*1.2) + (Math.floor(i/9) * (STATE_NAMES.length/4 * 9.9))) })
-    .attr("y", function(d,i) { return Math.floor(i%9)*(size+5) + size/1.6 })
+    .attr("y", function(d,i) { return Math.floor(i%9)*(size+5) + size/1.3 })
     .style("fill", 'white')
     .text(function(d) { return d })
     .attr("text-anchor", "left")
