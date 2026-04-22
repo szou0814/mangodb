@@ -384,6 +384,8 @@
         document.getElementById('stat-infected').textContent = Math.round(totalInfected).toLocaleString();
         document.getElementById('stat-deaths').textContent = Math.round(totalDeaths).toLocaleString();
         document.getElementById('stat-date').textContent = data[0].date;
+        document.getElementById('stat-stringency').textContent = data[0].stringency.toFixed(1);
+        document.getElementById('stat-vulnerability').textContent = data[0].svi.toFixed(3);
       } else {
         clearInterval(updates);
         document.getElementById('util').removeChild(document.getElementById('but1'));
