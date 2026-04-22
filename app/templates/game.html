@@ -353,7 +353,7 @@
         };
 
         mapElem.update(new Date(data[0].date));
-        stackedLineElem.update(new Date(data[0].date));
+        stackedLineElem.update();
 
         const totalInfected = data.reduce((sum, d) => sum + d.infected, 0);
 
