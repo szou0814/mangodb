@@ -35,6 +35,13 @@ def create_tbs():
 def load_states():
     db = sqlite3.connect(DB_FILE)
     c = db.cursor()
+    
+    trends = {}
+    with open("data/state_trends.csv", newline="", encoding="utf-8") as tf:
+        t_reader = csv.DictReader(tf)
+        for row in t_reader:
+            trends[row["state"]] = {"pop": int(row["population"]), "dens": float(row["pop_density"])}
+
     with open("data/SVI_2020_US_county.csv", newline="") as f:
         reader = csv.DictReader(f)
         states_totpop = {}
@@ -63,8 +70,13 @@ def load_states():
             states_numcounties[state_id] += 1
         for state in states_totpop:
             avg_vulnerability_index = states_totsvi[state] / states_numcounties[state]
-            population_density = states_totpop[state] / states_totarea[state]
-            c.execute("INSERT INTO STATES (state_id, vulnerability_index, population, population_density) VALUES (?, ?, ?, ?)", (state, avg_vulnerability_index, states_totpop[state], population_density))
+            if state in trends:
+                final_pop = trends[state]["pop"]
+                final_dens = trends[state]["dens"]
+            else:
+                final_pop = states_totpop[state]
+                final_dens = states_totpop[state] / states_totarea[state]
+            c.execute("INSERT INTO STATES (state_id, vulnerability_index, population, population_density) VALUES (?, ?, ?, ?)", (state, avg_vulnerability_index, final_pop, final_dens))
 
     db.commit()
     db.close()

@@ -29,11 +29,27 @@
     }
 
     #but1 {
-      background-color: rgba(180, 0, 0, 0.6);
-      padding: 4px;
-      border-width: 1px;
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.8) 0%, rgba(180, 0, 0, 0.8) 100%);
+      padding: 12px 24px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       margin-left: 20px;
-      font-size: 150%;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: white;
+      box-shadow: 0 4px 15px rgba(180, 0, 0, 0.3);
+    }
+
+    #but1:hover {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.9) 0%, rgba(200, 0, 0, 0.9) 100%);
+      box-shadow: 0 6px 25px rgba(180, 0, 0, 0.5);
+      transform: translateY(-2px);
+    }
+
+    #but1:active {
+      transform: translateY(0);
     }
 
     input[type="range"]::-webkit-slider-thumb {
@@ -46,6 +62,13 @@
 
       display: flex;
       flex-direction: column;
+    }
+
+    #util {
+      padding: 16px 32px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
     }
 
     #graphs {
@@ -78,6 +101,26 @@
       align-items: center;
       justify-content: center;
     }
+
+    .stats-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stats-label {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .stats-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fca5a5;
+    }
   </style>
 
 </head>
@@ -100,28 +143,46 @@
     </form>
   </nav>
 
-  <div class="flex justify-between items-center px-4 py-2 border-b bg-red-900 mb-4">
-    <div class="flex gap-6 text-sm">
-      <span>State: <strong></strong></span>
-      <span>Total Infected: <strong></strong></span>
-      <span>Total Dead: <strong></strong></span>
-      <span>Stringency Index: <strong></strong></span>
-      <span>Social Vulnerability Index: <strong></strong></span>
-    </div>
-    <div class="text-sm">
-      Date: <strong></strong>
+  <div class="border-b bg-gradient-to-r from-red-950/40 to-red-900/20 backdrop-blur-sm px-8 py-4 border-red-800/30">
+    <div class="flex justify-between items-start gap-8">
+      <div class="flex gap-8">
+        <div class="stats-item">
+          <span class="stats-label">Current State</span>
+          <span class="stats-value"><strong id="stat-state"></strong></span>
+        </div>
+        <div class="stats-item">
+          <span class="stats-label">Total Infected</span>
+          <span class="stats-value"><strong id="stat-infected"></strong></span>
+        </div>
+        <div class="stats-item">
+          <span class="stats-label">Total Deaths</span>
+          <span class="stats-value"><strong id="stat-deaths"></strong></span>
+        </div>
+        <div class="stats-item">
+          <span class="stats-label">Stringency Index</span>
+          <span class="stats-value"><strong id="stat-stringency"></strong></span>
+        </div>
+        <div class="stats-item">
+          <span class="stats-label">Social Vulnerability</span>
+          <span class="stats-value"><strong id="stat-vulnerability"></strong></span>
+        </div>
+      </div>
+      <div class="stats-item text-right">
+        <span class="stats-label">Simulation Date</span>
+        <span class="stats-value text-lg"><strong id="stat-date"></strong></span>
+      </div>
     </div>
   </div>
 
   <div id="mainCont">
     <!-- UTIL -->
     <div id="util">
-      <button id="but1">Play Simulation</button>
+      <button id="but1">Start Simulation</button>
     </div>
 
     <!-- GRAPHS -->
-    <div style="padding: 36px 5% 32px;" class="flex gap-5 items-start">
-      <div class="flex-1 bg-black/45 border border-white/[0.08] rounded-2xl p-5 backdrop-blur-md">
+    <div style="padding: 24px 5% 32px;" class="flex gap-5 items-start flex-1">
+      <div class="flex-1 bg-gradient-to-br from-black/50 to-black/30 border border-white/[0.1] rounded-2xl p-6 backdrop-blur-lg shadow-2xl">
         <div id="graphs">
 
           <div id="map"></div>
@@ -133,57 +194,105 @@
     </div>
   </div>
 
-  <!-- modal -->
-  <!-- <div id="modal" class="fixed inset-0 flex items-center justify-center hidden z-50">
-      <div class="bg-red-900 border border-white border-2 rounded-xl p-6 w-[500px] text-center shadow-xl">
+  <div id="modal" class="fixed inset-0 flex items-center justify-center hidden z-50">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div class="relative w-[540px] rounded-2xl border border-red-800/50 shadow-2xl overflow-hidden"
+      style="background: linear-gradient(145deg, rgba(20,5,5,0.97) 0%, rgba(40,8,8,0.97) 100%); box-shadow: 0 0 60px rgba(180,0,0,0.2), 0 25px 50px rgba(0,0,0,0.7);">
 
-        <p id="modalPrompt" class="text-lg mb-6">
-          This is the prompt
-        </p>
-
-        <div class="flex flex-col items-center gap-4">
-          <button onclick="handleChoice(1)"
-            class="px-4 py-2 bg-red-800 hover:bg-red-600 rounded-md border border-white border-2 shadow-xl">
-            Choice 1
-          </button>
-
-          <button onclick="handleChoice(2)"
-            class="px-4 py-2 bg-red-800 hover:bg-red-600 rounded-md border border-white border-2 shadow-xl">
-            Choice 2
-          </button>
-        </div>
-
+      <!-- header bar -->
+      <div class="px-7 py-4 border-b border-red-900/40 flex items-center gap-3"
+        style="background: linear-gradient(90deg, rgba(120,0,0,0.3) 0%, transparent 100%);">
+        <span class="text-xs font-bold tracking-widest uppercase text-red-400/80">Policy Decision</span>
       </div>
-    </div> -->
 
-  <!-- modal js -->
-  <!-- <script>
-      let prompt = "This is the prompt"; // replace w/ actual jinja prompt variable later
+      <!-- question -->
+      <div class="px-7 py-6">
+        <p id="modalPrompt" class="text-white/90 text-base leading-relaxed font-medium"></p>
+      </div>
 
-      function showModal(prompt) {
-        document.getElementById("modalPrompt").innerText = prompt;
-        document.getElementById("modal").classList.remove("hidden");
+      <!-- choices -->
+      <div id="modalChoices" class="px-7 pb-7 flex flex-col gap-3"></div>
+
+    </div>
+  </div>
+
+  <style>
+    .choice-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      text-align: left;
+      padding: 13px 16px;
+      border-radius: 10px;
+      border: 1px solid rgba(180, 40, 40, 0.3);
+      background: rgba(255,255,255,0.03);
+      color: rgba(255,255,255,0.85);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .choice-btn:hover {
+      background: rgba(180, 0, 0, 0.2);
+      border-color: rgba(220, 60, 60, 0.6);
+      color: white;
+      transform: translateX(3px);
+    }
+    .choice-key {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: rgba(180, 0, 0, 0.4);
+      border: 1px solid rgba(220, 60, 60, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #fca5a5;
+    }
+  </style>
+
+  <script>
+    function showModal(question, choices) {
+      document.getElementById("modalPrompt").innerText = question;
+
+      const container = document.getElementById("modalChoices");
+      container.innerHTML = "";
+      for (const [key, choice] of Object.entries(choices)) {
+        const btn = document.createElement("button");
+        btn.className = "choice-btn";
+        btn.innerHTML = `<span class="choice-key">${key}</span><span>${choice.label}</span>`;
+        btn.onclick = () => handleChoice(key);
+        container.appendChild(btn);
       }
 
-      function hideModal() {
-        document.getElementById("modalOverlay").classList.add("hidden");
-      }
+      document.getElementById("modal").classList.remove("hidden");
+    }
 
-      function handleChoice(choice) {
-        console.log("User chose:", choice);
-        hideModal();
-      }
+    function hideModal() {
+      document.getElementById("modal").classList.add("hidden");
+    }
 
-      if (prompt !== null && prompt !== undefined) {
-        showModal(prompt);
-      }
-    </script> -->
+    async function handleChoice(choice) {
+      const promptKey = document.getElementById('modal').dataset.promptKey;
+      await fetch(window.location.href, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'action': 'choice' },
+        body: JSON.stringify({ choice: choice, promptKey: promptKey })
+      });
+      hideModal();
+      if (window.resumeSimulation) window.resumeSimulation();
+    }
+  </script>
 
   <!-- D3.JS IMPLEMENTATION -->
   <script type="module">
     var pops = {{ pops | tojson }};
-    var state_total_infected = {};
-    var total_infected = 0;
+    var state_dots = {};
+    var state_death_dots = {};
+    var initial_population = {};
     var isInitial = true;
     var running = false;
     var updates;
@@ -194,7 +303,7 @@
       "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
       "Wisconsin", "Wyoming"];
 
-    import { map, mapData } from "/static/js/map.js";
+    import { map, mapData, deathMapData } from "/static/js/map.js";
     import { stackedLine, areaData } from "/static/js/stackedLine.js";
     import { Scrubber } from "/static/js/mbostockScrubber.js";
     import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
@@ -233,9 +342,14 @@
       });
 
       console.log(response);
-      const data = await response.json();
-      console.log(data);
-      return data;
+      var data;
+      try {
+        data = await response.json();
+      } catch {
+        data = 'end';
+      } finally {
+        return data;
+      }
     }
 
     async function fetchPageSource() {
@@ -249,18 +363,23 @@
       const data = await fetchData();
       await fetchPageSource();
 
-      console.log('aa');
       if (data != 'end') {
-        console.log('i here');
         if (!isInitial) {
           data.forEach(d => {
-            if (d.infected > 0) {
-              if (createDot(d.state, d.infected)) {
-                let point = mapElem.createPoint(d.state);
+            const dotsToAdd = createDot(d.state, d.infected);
+            for (let i = 0; i < dotsToAdd; i++) {
+              let point = mapElem.createPoint(d.state);
+              if (point) {
+                mapData.push(Object.assign(point, { date: new Date(d.date) }));
+              }
+            }
 
-                mapData.push(Object.assign(point,
-                  { date: new Date(d.date) }
-                ));
+            const deaths = (initial_population[d.state] || 0) - d.currPopulation;
+            const deathDotsToAdd = createDeathDot(d.state, deaths);
+            for (let i = 0; i < deathDotsToAdd; i++) {
+              let point = mapElem.createPoint(d.state);
+              if (point) {
+                deathMapData.push(Object.assign(point, { date: new Date(d.date) }));
               }
             }
 
@@ -270,18 +389,22 @@
             ));
           });
         } else {
-          console.log('iaa here');
           data.forEach(d => {
-            console.log('a');
+            // record the simulations starting population for each state
+            if (!(d.state in initial_population)) {
+              initial_population[d.state] = d.currPopulation;
+            }
+
             if (d.infected > 0) {
-              console.log('b');
-              createDot(d.state, d.infected);
               let point = mapElem.createPoint(d.state);
-              console.log('c');
-              mapData.push(Object.assign(point,
-                { date: new Date(d.date) }
-              ));
-              console.log('d');
+              if (point) {
+                mapData.push(Object.assign(point,
+                  { date: new Date(d.date) }
+                ));
+
+                if (d.state in state_dots) state_dots[d.state] = state_dots[d.state] + 1;
+                else state_dots[d.state] = 1;
+              }
             }
 
             areaData.push(Object.assign({ date: new Date(d.date) },
@@ -289,16 +412,38 @@
               { infected: d.infected }
             ));
           });
-          console.log('i finished');
           isInitial = false;
         };
 
-        console.log("stackedLineElem =", window.stackedLineElem);
-        console.log("mapElem =", window.stackedLineElem);
         mapElem.update(new Date(data[0].date));
-        stackedLineElem.update(new Date(data[0].date));
+        stackedLineElem.update();
+
+        const totalInfected = data.reduce((sum, d) => sum + d.infected, 0);
+
+        const currentPopulation = data.reduce((sum, d) => sum + d.currPopulation, 0);
+        const totalOriginalPopulation = data.reduce((sum, d) => sum + (pops[STATE_NAMES.indexOf(d.state)] || 0), 0);
+        const totalDeaths = totalOriginalPopulation - currentPopulation;
+        console.log(currentPopulation);
+        console.log(totalOriginalPopulation);
+        console.log(totalDeaths);
+
+        document.getElementById('stat-state').textContent = "{{ state_name }}";
+        document.getElementById('stat-infected').textContent = Math.round(totalInfected).toLocaleString();
+        document.getElementById('stat-deaths').textContent = Math.round(totalDeaths).toLocaleString();
+        document.getElementById('stat-date').textContent = data[0].date;
+        document.getElementById('stat-stringency').textContent = data[0].stringency.toFixed(1);
+        document.getElementById('stat-vulnerability').textContent = data[0].svi.toFixed(3);
+
+        if (data[0].prompt) {
+          clearInterval(updates);
+          running = false;
+          document.getElementById('but1').innerHTML = 'Start Simulation';
+          document.getElementById('modal').dataset.promptKey = data[0].prompt.key;
+          showModal(data[0].prompt.prompt.question, data[0].prompt.prompt.choices);
+        }
       } else {
         clearInterval(updates);
+        document.getElementById('util').removeChild(document.getElementById('but1'));
       }
     };
 
@@ -306,33 +451,64 @@
       const idx = STATE_NAMES.indexOf(state);
       const pop = pops[idx];
 
-      console.log({ state, idx, pop, infected });
+      if (!pop || infected <= 0) return 0;
 
-      if (!pop) return false;
-      if (state in state_total_infected) {
-        let change = infected - state_total_infected[state];
-        state_total_infected[state] = infected;
+      const current = state_dots[state] ?? 0;
+      // 1 dot per 0.1% of population
+      const target = current === 0 ? 1 : Math.round((infected / pop) / 0.001);
 
-        return true;
-        // return (change / pops[STATE_NAMES.indexOf(state)] >= 0.005)
-      } else {
-        state_total_infected[state] = infected;
-        console.log('i got here');
-        return true;
-        // return (infected / pops[STATE_NAMES.indexOf(state)] >= 0.005)
+      if (target <= current) return 0;
+
+      // cap at 10 per tick so fast-growing states don't flood the map at once
+      const toAdd = Math.min(target - current, 10, 50 - current);
+      if (toAdd <= 0) return 0;
+      state_dots[state] = current + toAdd;
+      return toAdd;
+    };
+
+    function createDeathDot(state, deaths) {
+      const pop = initial_population[state];
+
+      if (!pop || deaths <= 0) return 0;
+
+      const current = state_death_dots[state] ?? 0;
+      const target = Math.round((deaths / pop) / 0.001);
+
+      if (target <= current) return 0;
+
+      // death dots can never outnumber infection dots for the same state
+      const infectionDots = state_dots[state] ?? 0;
+      const toAdd = Math.min(target - current, 10, 50 - current, infectionDots - current);
+      if (toAdd <= 0) return 0;
+      state_death_dots[state] = current + toAdd;
+      return toAdd;
+    };
+
+    window.resumeSimulation = function() {
+      if (!running) {
+        updates = setInterval(() => updateGraphs(), 500);
+        running = true;
+        document.getElementById('but1').innerHTML = 'Pause Simulation';
       }
     };
 
     document.getElementById('but1').addEventListener("click", () => {
-      updateGraphs();
       if (!running) {
+          updateGraphs();
           updates = setInterval(() => {
             console.log('ran');
             updateGraphs()
-          }, 1000);
+          }, 500);
+
+          document.getElementById('but1').innerHTML = 'Pause Simulation';
           running = true;
+        } else {
+          clearInterval(updates);
+
+          document.getElementById('but1').innerHTML = 'Start Simulation';
+          running = false;
         }
-    })
+    });
   </script>
 
 </body>

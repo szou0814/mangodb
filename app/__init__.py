@@ -7,6 +7,7 @@ import sys
 import random
 import build_db as db
 import logic as logic
+from model import get_models
 
 app = Flask(__name__)
 app.secret_key = 'hi'
@@ -88,6 +89,16 @@ def game():
     if request.method == "POST":
         reqs = request.headers
 
+        if reqs.get('action') == 'choice' and cache.get('sim') is not None:
+            sim = cache['sim']
+            body = request.get_json()
+            prompt_key = body.get('promptKey')
+            choice_key = body.get('choice')
+            newStringency, newSvi, failed, msg = logic.handle_choice(prompt_key, choice_key, sim.curr_stringency, sim.curr_svi, sim.seen_prompts)
+            sim.curr_stringency = newStringency
+            sim.curr_svi = newSvi
+            return jsonify({"ok": True, "failed": failed, "msg": msg})
+
         if 'data' in reqs and cache.get('sim') is not None:
             sim = cache['sim']
             df = sim.tick()
@@ -96,7 +107,16 @@ def game():
 
             if session['ticks'] > 156:
                 return 'end'
-                
+            
+            pending = sim.pending_prompts.copy()
+            sim.pending_prompts.clear()
+
+            for item in newData:
+                 item['stringency'] = sim.curr_stringency
+                 item['svi'] = sim.curr_svi
+            if newData:
+                newData[0]['prompt'] = pending[0] if pending else None
+
             return jsonify(newData)
 
         if 'state_name' not in session or session["state_name"] != request.form.get("state_name"):
@@ -107,8 +127,9 @@ def game():
             session['ticks'] = 0
 
     if cache.get('sim') is None:
+        models = get_models();
         map_adj = logic.get_adjacency()
-        sim = logic.Simulation(session['state_name'], map_adj)
+        sim = logic.Simulation(session['state_name'], map_adj, models)
         cache['sim'] = sim
         # # Tick the simulation
         # print("tickin")
@@ -141,17 +162,20 @@ def game():
 
 def addToDict(df, tick):
     data = []
-    infected_cols = [c for c in df.columns[tick:] if str(c).endswith("_infected")]
+    infected_cols = [c for c in df.columns if str(c).endswith("_infected")][tick:]
     for col in infected_cols:
         for state in STATES:
             state_name = STATE_NAMES[STATES.index(state)]
             date_str = str(col)[:10]
             infected = df.loc[state, col]
+            population = df.loc[state, col.replace("_infected", '') + "_population"]
             data.append({
                 'state': state_name,
                 'date': date_str,
                 'infected': float(infected),
+                'currPopulation': float(population)
             })
+
 
     return data
 
