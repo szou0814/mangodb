@@ -70,7 +70,7 @@ def handle_choice(prompt, choice, stringency, svi, seen_prompts):
             sviChange = -(sviChange * 0.5)
             msg = "Your policy was not well-received by the public and had limited effects."
     newStringency, newSvi = limit(stringency + stringencyChange, svi + sviChange)
-    return newStringency, newSvi, failed, message
+    return newStringency, newSvi, failed, msg
 
 
 def get_adjacency():
@@ -141,7 +141,7 @@ class Simulation:
         eff_pop = max(0, curr_pop - curr_res)
 
         if self.covid_models is not None:
-             new_infections = self.covid_models.predict_new_infections(eff_pop, self.population_density[idx], curr_inf, self.vulnerability_index[idx], self.stringency_index[idx])
+             new_infections = self.covid_models.predict_new_infections(eff_pop, self.population_density[idx], curr_inf, self.curr_svi, self.curr_stringency)
              return curr_inf + new_infections
         return curr_inf * (1 + ((self.vulnerability_index[idx]*10)/self.population_density[idx])) + self.population_density[idx]
 
