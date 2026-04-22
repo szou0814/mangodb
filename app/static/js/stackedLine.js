@@ -22,7 +22,7 @@ function StackedAreaChart(data, {
   xFormat, // a format specifier string for the x-axis
   yFormat = ",.0f", // a format specifier for the y-axis
   yLabel, // a label for the y-axis
-  colors = d3.quantize(d3.interpolateInferno, 50), // array of colors for z
+  colors = d3.quantize(d3.interpolateCool, 50), // array of colors for z
 } = {}) {
   const STATE_NAMES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
     "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri",
@@ -271,7 +271,7 @@ function StackedAreaChart(data, {
         d3.selectAll('.legendItems')
           .select('text')
           .style('fill', 'white');
-          
+
         if (stackedStatus || state != selectedState) {
           stackedStatus = false;
           selectedState = state;

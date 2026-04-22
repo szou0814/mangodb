@@ -97,7 +97,7 @@ def game():
 
             if session['ticks'] > 156:
                 return 'end'
-            
+
             for item in newData:
                  item['stringency'] = sim.curr_stringency
                  item['svi'] = sim.curr_svi
@@ -147,7 +147,7 @@ def game():
 
 def addToDict(df, tick):
     data = []
-    infected_cols = [c for c in df.columns[tick:] if str(c).endswith("_infected")]
+    infected_cols = [c for c in df.columns if str(c).endswith("_infected")][tick:]
     for col in infected_cols:
         for state in STATES:
             state_name = STATE_NAMES[STATES.index(state)]
