@@ -34,7 +34,7 @@ def limit(stringency, svi):
     return (max(10, min(90, stringency)), max(0.05, min(0.95, svi)))
 
 def is_prompt_tick(tick):
-    return tick > 0 and tick % 8 == 0
+    return tick > 0 and tick % 25 == 0
 
 def get_prompt(tick, state, dens, stringency, svi, seen_prompts):
     poss = []
