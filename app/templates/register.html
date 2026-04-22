@@ -132,9 +132,9 @@
     </p>
 
     <form class='move' method="POST">
-      <input class='move' type="text" name="user_id" placeholder="Username" required> <p>&nbsp</p>
-      <input class='move' type="password" name="password" placeholder="Password" required> <p>&nbsp</p>
-      <input class='move' type="submit" name="sub1" value="ENTER">
+      <input type="text" name="user_id" placeholder="Username" required> <p>&nbsp</p>
+      <input type="password" name="password" placeholder="Password" required> <p>&nbsp</p>
+      <input type="submit" name="sub1" value="ENTER">
     </form>
 
     <p class='move'>&nbsp</p><p class='move'>&nbsp</p>
@@ -152,7 +152,7 @@
 
         let shift = items.forEach(i => {
           i.style.visibility = 'visible';
-          
+
           i.animate(
             [{transform: 'translate(-2000px, 0px)'}, {transform: 'translate(0px,  0px)'}],
             {
