@@ -70,7 +70,7 @@ def handle_choice(prompt, choice, stringency, svi, seen_prompts):
             sviChange = -(sviChange * 0.5)
             msg = "Your policy was not well-received by the public and had limited effects."
     newStringency, newSvi = limit(stringency + stringencyChange, svi + sviChange)
-    return newStringency, newSvi, failed, message
+    return newStringency, newSvi, failed, msg
 
 
 def get_adjacency():

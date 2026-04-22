@@ -89,6 +89,15 @@ def game():
     if request.method == "POST":
         reqs = request.headers
 
+        if 'choice' in reqs and cache.get('sim') is not None:
+            sim = cache['sim']
+            prompt_key = reqs.get('prompt_key')
+            choice_key = reqs.get('choice')
+            newStringency, newSvi, failed, msg = logic.handle_choice(prompt_key, choice_key, sim.curr_stringency, sim.curr_svi, sim.seen_prompts)
+            sim.curr_stringency = newStringency
+            sim.curr_svi = newSvi
+            return jsonify({"ok": True, "failed": failed, "msg": msg})
+
         if 'data' in reqs and cache.get('sim') is not None:
             sim = cache['sim']
             df = sim.tick()
@@ -98,9 +107,14 @@ def game():
             if session['ticks'] > 156:
                 return 'end'
             
+            pending = sim.pending_prompts.copy()
+            sim.pending_prompts.clear()
+
             for item in newData:
                  item['stringency'] = sim.curr_stringency
                  item['svi'] = sim.curr_svi
+            if newData:
+                newData[0]['prompt'] = pending[0] if pending else None
 
             return jsonify(newData)
 
