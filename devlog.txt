@@ -105,4 +105,19 @@ sarahZ -- 2026-4-19 20:08
 - finished functions to select prompt and handle choices
 - updated run_simulation to handle prompts and choices
 - debugged 
-- did some html/css for narration
+- did some html/css for narrations
+
+sarahZ -- 2026-04-21 23:55
+TEAM EFFORT
+- lots and lots of debugging 
+- added flask route and jinja handling for prompts and modal
+- added feature to view individual states in stacked area chart
+- fixed points on graph going out of bounds 
+- modified tick rate and prompts
+- finished css & graph legends, graph display
+NOTABLE DESIGN REVISIONS:
+------------------------------------
+* REMOVED CHOPPING BLOCK ITEMS: result.html and profile.html 
+* added data implementation method & updated calculation/graph logic to reflect final #s and formulas
+* updated module names and files in components/site map
+====================================

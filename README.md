@@ -59,3 +59,13 @@ Then click the link:
 ```
 http://127.0.0.1:5000
 ```
+
+### FEATURE SPOTLIGHT
+* trained a regression model using datasets in pytorch, in model.py
+* prompts: prompts occur every 25 ticks (12.5 seconds) and are randomly selected, the prompts that come up depend on a state's population density and previous prompts, some choices with positive effects can fail which either negates or decreases the change on stringency/vulnerability index 
+* interactive stacked line graph: click on a state name to see the # of infected/week in that state, click the state again to see a stacked line graph of the total # of infected nationally / week and how many # of infected each state contributes / week
+* animations!
+
+### KNOWN BUGS/ISSUES
+* issue: no reset button after a simulation run/exit 
+* no known bugs (as of yet)
